@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="chris.discgolf.NewCourse">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textSize="25sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/new_course_name"
+        android:layout_width="330dp"
+        android:layout_height="45dp"
+        android:background="@drawable/edit_text_drawable"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="6dp"
+        android:textSize="29sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City:"
+                android:textSize="25sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/new_course_city"
+                android:layout_width="220dp"
+                android:layout_height="45dp"
+                android:background="@drawable/edit_text_drawable"
+                android:layout_marginLeft="10dp"
+                android:paddingLeft="6dp"
+                android:textSize="29sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="State:"
+                android:textSize="25sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/new_course_state"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:background="@drawable/edit_text_drawable"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textSize="29sp"
+                android:maxLength="2"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Holes"
+    android:textSize="25sp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/new_course_holes"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:background="@drawable/edit_text_drawable"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="6dp"
+        android:textSize="29sp"
+        android:maxLength="2"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/new_course_play"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:text="Finish and Play"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="145dp"/>
+
+</LinearLayout>
