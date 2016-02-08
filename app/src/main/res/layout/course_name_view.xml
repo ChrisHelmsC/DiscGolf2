@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:textSize="24sp"
-        android:text="Hello"
+        android:text="MedowBrook"
         android:layout_marginLeft="22dp"/>
 
     <TextView

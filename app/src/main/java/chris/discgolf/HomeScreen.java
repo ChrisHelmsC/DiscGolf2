@@ -21,7 +21,7 @@ public class HomeScreen extends AppCompatActivity
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent playIntent = new Intent(v.getContext(), PlayGame.class);
+                Intent playIntent = new Intent(v.getContext(), ChooseCourse.class);
                 startActivity(playIntent);
             }
         });

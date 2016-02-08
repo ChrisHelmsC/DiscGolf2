@@ -1,5 +1,6 @@
 package chris.discgolf;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,39 +10,15 @@ import java.util.List;
 /**
  * Created by Chris on 12/17/2015.
  */
-public class Course implements Parcelable
-{
+public class Course implements Parcelable {
     private String courseName;
     private int numberOfHoles;
     private int playerBest;
     private int playerAverage;
     private int courseAverage;
-    String city, state;
+    private String city;
+    private String state;
     List<Hole> holeList;
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        state = state;
-    }
-
-    public int getCourseAverage() {
-        return courseAverage;
-    }
-
-    public void setCourseAverage(int courseAverage) {
-        this.courseAverage = courseAverage;
-    }
 
     public Course(String name, int nH, int pB, int pA, int cA, String c, String s, List<Hole> holes)
     {
@@ -77,6 +54,30 @@ public class Course implements Parcelable
         this.playerBest = -1;
         this.playerAverage = -1;
         this.courseAverage = -1;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        state = state;
+    }
+
+    public int getCourseAverage() {
+        return courseAverage;
+    }
+
+    public void setCourseAverage(int courseAverage) {
+        this.courseAverage = courseAverage;
     }
 
     public String getCourseName() {
@@ -119,34 +120,54 @@ public class Course implements Parcelable
         this.holeList = holeList;
     }
 
-    //Parcelable Stuff
-    public int describeContents()
-    {
+    protected Course(Parcel in) {
+        courseName = in.readString();
+        numberOfHoles = in.readInt();
+        playerBest = in.readInt();
+        playerAverage = in.readInt();
+        courseAverage = in.readInt();
+        city = in.readString();
+        state = in.readString();
+        if (in.readByte() == 0x01) {
+            holeList = new ArrayList<Hole>();
+            in.readList(holeList, Hole.class.getClassLoader());
+        } else {
+            holeList = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    public Course(Parcel in)
-    {
-        String[] data = new String[7];
-        in.readStringArray(data);
-
-        this.courseName = in.readString();
-        this.numberOfHoles = in.readInt();
-        this.playerBest = in.readInt();
-        this.playerAverage = in.readInt();
-        this.courseAverage = in.readInt();
-        this.city = in.readString();
-        this.state = in.readString();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(courseName);
+        dest.writeInt(numberOfHoles);
+        dest.writeInt(playerBest);
+        dest.writeInt(playerAverage);
+        dest.writeInt(courseAverage);
+        dest.writeString(city);
+        dest.writeString(state);
+        if (holeList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(holeList);
+        }
     }
 
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeStringArray(new String[] {this.courseName, Integer.toString(this.numberOfHoles), Integer.toString(this.playerBest), Integer.toString(this.playerAverage), Integer.toString(this.courseAverage), this.city, this.state});
-    }
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
-    {
-        public Course createFromParcel(Parcel in) {return new Course(in);}
-        public Course[] newArray(int size) {return new Course[size];}
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
     };
 }

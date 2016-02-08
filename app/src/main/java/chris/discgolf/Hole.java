@@ -6,17 +6,24 @@ import android.os.Parcelable;
 /**
  * Created by Chris on 12/17/2015.
  */
-public class Hole implements Parcelable
-{
+public class Hole implements Parcelable {
     private int holeNumber;
     private int par;
     private int length;
+
+    //Player and public stats
+    private int avgPar;
+    private int playerAvg;
+    private int playerBest;
 
     public Hole(int hn, int par, int ln)
     {
         this.holeNumber = hn;
         this.par = par;
         this.length = ln;
+        this.avgPar = 0;
+        this.playerAvg = 0;
+        this.playerBest = 0;
     }
 
     public Hole(int hn, int par)
@@ -24,6 +31,43 @@ public class Hole implements Parcelable
         this.holeNumber = hn;
         this.par = par;
         this.length = 0;
+        this.avgPar = 0;
+        this.playerAvg = 0;
+        this.playerBest = 0;
+    }
+
+    public Hole(int hn, int par, int ln, int aP, int pA, int pB)
+    {
+        this.holeNumber = hn;
+        this.par = par;
+        this.length = ln;
+        this.avgPar = aP;
+        this.playerAvg = pA;
+        this.playerBest = pB;
+    }
+
+    public int getPlayerBest() {
+        return playerBest;
+    }
+
+    public void setPlayerBest(int playerBest) {
+        this.playerBest = playerBest;
+    }
+
+    public int getAvgPar() {
+        return avgPar;
+    }
+
+    public void setAvgPar(int avgPar) {
+        this.avgPar = avgPar;
+    }
+
+    public int getPlayerAvg() {
+        return playerAvg;
+    }
+
+    public void setPlayerAvg(int playerAvg) {
+        this.playerAvg = playerAvg;
     }
 
     public int getHoleNumber() {
@@ -50,26 +94,40 @@ public class Hole implements Parcelable
         this.length = length;
     }
 
-    public int describeContents() {return 0;}
-
-    public Hole(Parcel in)
-    {
-        String[] data = new String[3];
-        in.readStringArray(data);
-
-        this.holeNumber = in.readInt();
-        this.par = in.readInt();
-        this.length = in.readInt();
+    protected Hole(Parcel in) {
+        holeNumber = in.readInt();
+        par = in.readInt();
+        length = in.readInt();
+        avgPar = in.readInt();
+        playerAvg = in.readInt();
+        playerBest = in.readInt();
     }
 
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeStringArray(new String[] {Integer.toString(this.holeNumber), Integer.toString(this.par), Integer.toString(this.length)});
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
-    {
-        public Hole createFromParcel(Parcel in) {return new Hole(in);}
-        public Hole[] newArray(int size) {return new Hole[size];}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(holeNumber);
+        dest.writeInt(par);
+        dest.writeInt(length);
+        dest.writeInt(avgPar);
+        dest.writeInt(playerAvg);
+        dest.writeInt(playerBest);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Hole> CREATOR = new Parcelable.Creator<Hole>() {
+        @Override
+        public Hole createFromParcel(Parcel in) {
+            return new Hole(in);
+        }
+
+        @Override
+        public Hole[] newArray(int size) {
+            return new Hole[size];
+        }
     };
 }

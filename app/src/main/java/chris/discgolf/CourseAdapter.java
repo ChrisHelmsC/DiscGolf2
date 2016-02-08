@@ -1,14 +1,11 @@
 package chris.discgolf;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 /**
  * Created by Chris on 12/17/2015.
@@ -18,9 +15,9 @@ public class CourseAdapter extends BaseAdapter
     CourseList courseList;
     private static LayoutInflater inflater = null;
     Context context;
-    PlayGame currentGame;
+    ChooseCourse currentGame;
 
-    public CourseAdapter(PlayGame playgame, CourseList cl)
+    public CourseAdapter(ChooseCourse playgame, CourseList cl)
     {
         context = playgame;
         courseList = cl;

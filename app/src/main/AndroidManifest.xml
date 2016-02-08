@@ -18,13 +18,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlayGame"
-            android:label="@string/title_activity_play_game" />
-        <activity android:name=".NewCourse" />
+            android:name=".ChooseCourse"
+            android:label="@string/title_activity_play_game"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".NewCourse"
+            android:label="Add New Course" />
         <activity
             android:name=".NumberPlayers"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".RunGame"></activity>
+            android:label="Add Players"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".RunGame"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FinalScoreCard"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

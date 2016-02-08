@@ -15,6 +15,14 @@ public class Player
         holePlayerScore = 0;
     }
 
+    public Player(String g, int tps, int hps)
+    {
+        playerName = g;
+        totalPlayerScore = tps;
+        holePlayerScore = hps;
+    }
+
+
     public String getPlayerName() {
         return playerName;
     }

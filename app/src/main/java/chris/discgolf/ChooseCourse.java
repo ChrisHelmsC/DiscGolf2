@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PlayGame extends AppCompatActivity {
+public class ChooseCourse extends AppCompatActivity {
 
     TextView avgPar, avgPlayer, bestPlayer;
     ListView LV;
@@ -47,7 +47,8 @@ public class PlayGame extends AppCompatActivity {
 
         //Add Courses to List for Testing
         courseList = new CourseList();
-        courseList.addCourse(new Course("MeadowBrook", 18, 2, 4, 7, "Greenville", "NC"));
+        ArrayList<Hole> mbcl = makeFakeCourse();
+        courseList.addCourse(new Course("MeadowBrook", 18, 2, 4, 7, "Greenville", "NC", mbcl));
         courseList.addCourse(new Course("ECU North Rec.", 18, 5, 7, 12, "Greenville", "NC"));
         courseList.addCourse(new Course("Covenant Church", 18, 2, 8, 9, "Greenville", "NC"));
         courseList.addCourse(new Course("Add New Course", 0, 0, 0, 0, "", ""));
@@ -137,4 +138,31 @@ public class PlayGame extends AppCompatActivity {
             startActivity(IT);
         }
     }
+
+    private ArrayList<Hole> makeFakeCourse()
+    {
+        ArrayList<Hole> holes = new ArrayList<Hole>();
+
+        holes.add(new Hole(1,3,300, 1,1,1));
+        holes.add(new Hole(2,3,300, 2,2,2));
+        holes.add(new Hole(3,3,300, 3,3,3));
+        holes.add(new Hole(4,3,300,4,4,4));
+        holes.add(new Hole(5,3,300,5,5,5));
+        holes.add(new Hole(6,3,300,6,6,6));
+        holes.add(new Hole(7,3,300,7,7,7));
+        holes.add(new Hole(8,3,300,8,8,8));
+        holes.add(new Hole(9,3,300,9,9,9));
+        holes.add(new Hole(1,3,300, 10,10,10));
+        holes.add(new Hole(1,3,300, 11,11,11));
+        holes.add(new Hole(2,3,300, 12,12,12));
+        holes.add(new Hole(3,3,300, 13,13,13));
+        holes.add(new Hole(4,3,300,14,14,14));
+        holes.add(new Hole(5,3,300,15,15,15));
+        holes.add(new Hole(6,3,300,16,16,16));
+        holes.add(new Hole(7,3,300,17,17,17));
+        holes.add(new Hole(8,3,300,18,18,18));
+
+        return holes;
+    }
+
 }

@@ -1,6 +1,7 @@
 package chris.discgolf;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +20,7 @@ public class NumberPlayers extends AppCompatActivity
     PlayerAdapter playerAdapter;
     List<String> playerList;
     ListView playersListView;
-
+    final int MAX_PLAYERS = 6;
     Course c;
 
     @Override
@@ -41,7 +42,7 @@ public class NumberPlayers extends AppCompatActivity
             public void onClick(View v)
             {
                 int num = Integer.parseInt(numberOfPlayers.getText().toString());
-                if(num  < 8)
+                if(num  < MAX_PLAYERS)
                 {
                     numberOfPlayers.setText(Integer.toString(num + 1));
                     playerList.add("");
@@ -83,6 +84,9 @@ public class NumberPlayers extends AppCompatActivity
             }
         });
 
+        //Resize listview
+
+
     }
 
     private List<String> removeLastInList(List<String> strings)
@@ -110,19 +114,15 @@ public class NumberPlayers extends AppCompatActivity
         Iterator<String> it = playerList.listIterator();
         int count = 0;
 
-        while(it.hasNext())
-        {
-            if(count == position)
-            {
-                it.next();
-                names[count] = s;
+            while (it.hasNext()) {
+                if (count == position) {
+                    it.next();
+                    names[count] = s;
+                } else {
+                    names[count] = it.next();
+                }
+                count++;
             }
-            else
-            {
-                names[count] = it.next();
-            }
-            count++;
-        }
 
         playerList = arrayToList(names);
         playerAdapter.setPlayerList(playerList);
@@ -150,8 +150,24 @@ public class NumberPlayers extends AppCompatActivity
         Intent i = new Intent(this, RunGame.class);
         i.putExtra("course", c);
         i.putParcelableArrayListExtra("holes", (ArrayList) c.getHoleList());
-        i.putStringArrayListExtra("players", (ArrayList) playerList);
+        playerList = clearEmptyPlayers(playerList);
+        i.putParcelableArrayListExtra("players", (ArrayList) playerList);
 
         startActivity(i);
+    }
+
+    private List<String> clearEmptyPlayers(List<String> players)
+    {
+        List<String> newList = new ArrayList<>();
+        String temp;
+        for(int i = 0; i < players.size(); i++)
+        {
+            temp = players.get(i);
+            if(temp!="")
+            {
+                newList.add(temp);
+            }
+        }
+        return newList;
     }
 }
