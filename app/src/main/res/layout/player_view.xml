@@ -6,25 +6,25 @@
     android:orientation="horizontal"
     android:layout_marginLeft="15dp">
 
-    <TextView
-        android:id="@+id/player_view_player_number"
-        android:layout_width="60dp"
+    <CheckBox
+        android:id="@+id/player_view_check_box"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
-        android:text="1."
-        android:textSize="40sp"
         android:gravity="center"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="25dp"/>
 
-    <EditText
+    <TextView
         android:id="@+id/player_view_player_name"
-        android:layout_width="265dp"
-        android:layout_height="60dp"
-        android:text="Chris"
+        android:layout_width="0dp"
+        android:layout_weight="9"
+        android:layout_height="50dp"
         android:textSize="35sp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:paddingLeft="5dp"
         android:layout_gravity="center_vertical"
-        android:paddingLeft="3dp"
         android:imeOptions="actionDone"
         android:singleLine="true"
         />

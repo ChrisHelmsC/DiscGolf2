@@ -1,16 +1,22 @@
 <resources>
     <string name="app_name">Home</string>
-    <string name="title_activity_play_game">Select A Course</string>
+    <string name="title_activity_Choose_Course">Select A Course</string>
     <string name="title_activity_home">Home</string>
 
     <!--Home Screen-->
     <string name="play_button">Play</string>
-    <string name="my_games_button">My Games</string>
-    <string name="my_discs_button">My Discs</string>
+    <string name="my_games_button">Player History</string>
+    <string name="my_discs_button">Settings</string>
 
-    <string name="subtract_player_button">&lt;</string>
-    <string name="add_player_button">&gt;</string>
+    <!--Choose Course-->
+    <string name="choose_course_search_hint">Course Search</string>
+    <string name="choose_course_play_button">Select</string>
 
-    <color name="light_orange">#ff8533</color>
+    <!--Number Players-->
+    <string name="number_players_subtract_player_button">&lt;</string>
+    <string name="number_players_add_player_button">&gt;</string>
+    <string name="number_players_title">Select Players</string>
+    <string name="number_players_play_button">Play!</string>
+
     <color name="light_orange2">#ff8433</color>
 </resources>

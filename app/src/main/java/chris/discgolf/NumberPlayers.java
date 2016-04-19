@@ -1,13 +1,15 @@
 package chris.discgolf;
 
 import android.content.Intent;
-import android.graphics.Rect;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,13 +17,13 @@ import java.util.List;
 
 public class NumberPlayers extends AppCompatActivity
 {
-    Button increment, decrement, confirm;
-    TextView numberOfPlayers;
-    PlayerAdapter playerAdapter;
-    List<String> playerList;
-    ListView playersListView;
-    final int MAX_PLAYERS = 6;
-    Course c;
+    private Button confirm;                             //Buttons for adding, subtracting players, confirming list
+    private PlayerAdapter playerAdapter;                //Adapter for player List
+    PlayerList playerList;                              //List of all players
+    PlayerList playingPlayers;                          //List of players that will be playing in the game
+    private ListView playersListView;                   //Listview showing all players
+    private Course c;                                   //Selected course
+    private SQLiteDatabase qdb;                         //Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -29,49 +31,21 @@ public class NumberPlayers extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_players);
 
+        //Init Database
+        DB db = new DB(this);
+        qdb = db.getReadableDatabase();
+
+        //Create playerlist from DB, create empying playingPlayers list
+        playerList = new PlayerList();
+        playerList.setWithList(DB.getAllPlayersList(qdb));
+        playingPlayers = new PlayerList();
+
+        //Get passed in course
         Bundle extras  = getIntent().getExtras();
         c = (Course) extras.getParcelable("course");
 
-        increment = (Button) findViewById(R.id.number_players_increment);
-        decrement = (Button) findViewById(R.id.number_players_decrement);
-        numberOfPlayers = (TextView) findViewById(R.id.number_players_number_players);
-
-        increment.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                int num = Integer.parseInt(numberOfPlayers.getText().toString());
-                if(num  < MAX_PLAYERS)
-                {
-                    numberOfPlayers.setText(Integer.toString(num + 1));
-                    playerList.add("");
-                    playerAdapter.setPlayerList(playerList);
-                    playerAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-
-        decrement.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                int num = Integer.parseInt(numberOfPlayers.getText().toString());
-                if(num  > 1)
-                {
-                    numberOfPlayers.setText(Integer.toString(num - 1));
-                    playerList = removeLastInList(playerList);
-                    playerAdapter.setPlayerList(playerList);
-                    playerAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-
-        playerList = new ArrayList<String>();
-        playerList.add("Chris");
-
-        playerAdapter = new PlayerAdapter(this, playerList);
+        //Initiliaze player adapter and listview
+        playerAdapter = new PlayerAdapter(this);
         playersListView = (ListView) findViewById(R.id.number_players_list_view);
         playersListView.setAdapter(playerAdapter);
 
@@ -84,60 +58,8 @@ public class NumberPlayers extends AppCompatActivity
             }
         });
 
-        //Resize listview
-
-
-    }
-
-    private List<String> removeLastInList(List<String> strings)
-    {
-        List<String> newList = new ArrayList<>();
-        Iterator<String> i = strings.listIterator();
-        int length = strings.size(), position = 1;
-        String name;
-        while(i.hasNext())
-        {
-            name = i.next();
-            if(position != length)
-            {
-                newList.add(name);
-            }
-            position++;
-        }
-        return newList;
-    }
-
-    public void addToPlayerAdapter(int position, String s)
-    {
-        String [] names = new String[playerList.size()];
-
-        Iterator<String> it = playerList.listIterator();
-        int count = 0;
-
-            while (it.hasNext()) {
-                if (count == position) {
-                    it.next();
-                    names[count] = s;
-                } else {
-                    names[count] = it.next();
-                }
-                count++;
-            }
-
-        playerList = arrayToList(names);
-        playerAdapter.setPlayerList(playerList);
-        //playerAdapter.notifyDataSetChanged();
-    }
-
-    private List<String> arrayToList(String[] s)
-    {
-        List<String> list = new ArrayList<>();
-        for(int i = 0; i < s.length; i++)
-        {
-            list.add(s[i]);
-        }
-
-        return list;
+        //Get course's holes and starting points
+        c.setHoleList(DB.getCourseHoles(c.getId() ,qdb));
     }
 
     //===========================================
@@ -147,27 +69,23 @@ public class NumberPlayers extends AppCompatActivity
     //===========================================
     private void startGame()
     {
-        Intent i = new Intent(this, RunGame.class);
-        i.putExtra("course", c);
-        i.putParcelableArrayListExtra("holes", (ArrayList) c.getHoleList());
-        playerList = clearEmptyPlayers(playerList);
-        i.putParcelableArrayListExtra("players", (ArrayList) playerList);
+        //Create intent to run game
+        Intent i = new Intent(this, PlayGame.class);
 
+        //Add course to extras extras
+        i.putExtra("course", c);
+
+        //Add Players to extras
+        i.putExtra("playerList", playingPlayers);
+
+        //Start rungame activity
         startActivity(i);
     }
 
-    private List<String> clearEmptyPlayers(List<String> players)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        List<String> newList = new ArrayList<>();
-        String temp;
-        for(int i = 0; i < players.size(); i++)
-        {
-            temp = players.get(i);
-            if(temp!="")
-            {
-                newList.add(temp);
-            }
-        }
-        return newList;
+        Toast.makeText(this, Integer.toString(item.getItemId()), Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
     }
 }

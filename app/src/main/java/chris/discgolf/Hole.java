@@ -3,71 +3,35 @@ package chris.discgolf;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Chris on 12/17/2015.
+ *
+ * 4/3/2016: Removed player stats from hole class to better represent hole.
+ *           Added arrayList of starting points so each hole has multiple starting points.
+ *           Made Parcelable.
  */
+
 public class Hole implements Parcelable {
     private int holeNumber;
     private int par;
-    private int length;
+    private List<HoleStartingPoint> startingPoints;
 
-    //Player and public stats
-    private int avgPar;
-    private int playerAvg;
-    private int playerBest;
-
-    public Hole(int hn, int par, int ln)
+    public Hole(int hn, int par, List<HoleStartingPoint> hps)
     {
         this.holeNumber = hn;
         this.par = par;
-        this.length = ln;
-        this.avgPar = 0;
-        this.playerAvg = 0;
-        this.playerBest = 0;
+        this.startingPoints = hps;
     }
 
-    public Hole(int hn, int par)
-    {
-        this.holeNumber = hn;
-        this.par = par;
-        this.length = 0;
-        this.avgPar = 0;
-        this.playerAvg = 0;
-        this.playerBest = 0;
+    public List<HoleStartingPoint> getStartingPoints() {
+        return startingPoints;
     }
 
-    public Hole(int hn, int par, int ln, int aP, int pA, int pB)
-    {
-        this.holeNumber = hn;
-        this.par = par;
-        this.length = ln;
-        this.avgPar = aP;
-        this.playerAvg = pA;
-        this.playerBest = pB;
-    }
-
-    public int getPlayerBest() {
-        return playerBest;
-    }
-
-    public void setPlayerBest(int playerBest) {
-        this.playerBest = playerBest;
-    }
-
-    public int getAvgPar() {
-        return avgPar;
-    }
-
-    public void setAvgPar(int avgPar) {
-        this.avgPar = avgPar;
-    }
-
-    public int getPlayerAvg() {
-        return playerAvg;
-    }
-
-    public void setPlayerAvg(int playerAvg) {
-        this.playerAvg = playerAvg;
+    public void setStartingPoints(List<HoleStartingPoint> startingPoints) {
+        this.startingPoints = startingPoints;
     }
 
     public int getHoleNumber() {
@@ -86,21 +50,15 @@ public class Hole implements Parcelable {
         this.par = par;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
     protected Hole(Parcel in) {
         holeNumber = in.readInt();
         par = in.readInt();
-        length = in.readInt();
-        avgPar = in.readInt();
-        playerAvg = in.readInt();
-        playerBest = in.readInt();
+        if (in.readByte() == 0x01) {
+            startingPoints = new ArrayList<HoleStartingPoint>();
+            in.readList(startingPoints, HoleStartingPoint.class.getClassLoader());
+        } else {
+            startingPoints = null;
+        }
     }
 
     @Override
@@ -112,10 +70,12 @@ public class Hole implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(holeNumber);
         dest.writeInt(par);
-        dest.writeInt(length);
-        dest.writeInt(avgPar);
-        dest.writeInt(playerAvg);
-        dest.writeInt(playerBest);
+        if (startingPoints == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(startingPoints);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -130,4 +90,17 @@ public class Hole implements Parcelable {
             return new Hole[size];
         }
     };
+
+    //Returns names of all starting points in the startingPoints
+    public List<String> getStartingPointNames()
+    {
+        List<String> spNames = new ArrayList<String>();
+
+        for(HoleStartingPoint sp : startingPoints)
+        {
+            spNames.add(sp.getName());
+        }
+
+        return spNames;
+    }
 }

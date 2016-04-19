@@ -10,16 +10,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".HomeScreen"
-            android:label="@string/title_activity_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".ChooseCourse"
-            android:label="@string/title_activity_play_game"
+            android:label="@string/title_activity_Choose_Course"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".NewCourse"
@@ -29,11 +23,16 @@
             android:label="Add Players"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".RunGame"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".FinalScoreCard"
-            android:screenOrientation="landscape"/>
+            android:name=".SplashPageActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ApplicationSettings" />
+        <activity android:name=".PlayGame"></activity>
     </application>
 
 </manifest>

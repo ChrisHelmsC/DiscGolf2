@@ -1,6 +1,5 @@
 package chris.discgolf;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,51 +8,51 @@ import java.util.List;
 
 /**
  * Created by Chris on 12/17/2015.
+ *
+ * 4/3/2016: Removed playerBest, playerAverage, courseAverage integers to better represent course
+ *
+ * 4/6/2016: Added course id for db functionality
  */
+
 public class Course implements Parcelable {
+    private int id;
     private String courseName;
-    private int numberOfHoles;
-    private int playerBest;
-    private int playerAverage;
-    private int courseAverage;
     private String city;
     private String state;
     List<Hole> holeList;
 
-    public Course(String name, int nH, int pB, int pA, int cA, String c, String s, List<Hole> holes)
+    public Course(int i, String name, String c, String s, List<Hole> holes)
     {
+        this.id = i;
         this.courseName = name;
-        this.numberOfHoles = nH;
-        this.playerBest = pB;
-        this.playerAverage = pA;
         this.holeList = holes;
-        this.courseAverage = cA;
         this.state = s;
         this.city = c;
     }
 
-    public Course(String name, int nH, int pB, int pA, int cA, String c, String s)
+    public Course(String name, String c, String s)
     {
         this.courseName = name;
-        this.numberOfHoles = nH;
-        this.playerBest = pB;
-        this.playerAverage = pA;
-        this.courseAverage = cA;
-        holeList = new ArrayList<Hole>();
         this.state = s;
         this.city = c;
+        holeList = new ArrayList<Hole>();
     }
 
-    public Course(String name, String c, String s, int nH)
+    public Course(int i, String name, String c, String s)
     {
+        this.id = i;
         this.courseName = name;
-        this.numberOfHoles = nH;
         this.state = s;
         this.city = c;
         holeList = new ArrayList<Hole>();
-        this.playerBest = -1;
-        this.playerAverage = -1;
-        this.courseAverage = -1;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCity() {
@@ -72,44 +71,12 @@ public class Course implements Parcelable {
         state = state;
     }
 
-    public int getCourseAverage() {
-        return courseAverage;
-    }
-
-    public void setCourseAverage(int courseAverage) {
-        this.courseAverage = courseAverage;
-    }
-
     public String getCourseName() {
         return courseName;
     }
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
-    }
-
-    public int getNumberOfHoles() {
-        return numberOfHoles;
-    }
-
-    public void setNumberOfHoles(int numberOfHoles) {
-        this.numberOfHoles = numberOfHoles;
-    }
-
-    public int getPlayerBest() {
-        return playerBest;
-    }
-
-    public void setPlayerBest(int playerBest) {
-        this.playerBest = playerBest;
-    }
-
-    public int getPlayerAverage() {
-        return playerAverage;
-    }
-
-    public void setPlayerAverage(int playerAverage) {
-        this.playerAverage = playerAverage;
     }
 
     public List<Hole> getHoleList() {
@@ -121,11 +88,8 @@ public class Course implements Parcelable {
     }
 
     protected Course(Parcel in) {
+        id = in.readInt();
         courseName = in.readString();
-        numberOfHoles = in.readInt();
-        playerBest = in.readInt();
-        playerAverage = in.readInt();
-        courseAverage = in.readInt();
         city = in.readString();
         state = in.readString();
         if (in.readByte() == 0x01) {
@@ -143,11 +107,8 @@ public class Course implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(courseName);
-        dest.writeInt(numberOfHoles);
-        dest.writeInt(playerBest);
-        dest.writeInt(playerAverage);
-        dest.writeInt(courseAverage);
         dest.writeString(city);
         dest.writeString(state);
         if (holeList == null) {
@@ -170,4 +131,14 @@ public class Course implements Parcelable {
             return new Course[size];
         }
     };
+
+    //Returns the hole after h
+    public Hole getNextHole(Hole h)
+    {
+        //Get index of h
+        int index = this.holeList.indexOf(h);
+
+        //Return next hole
+        return this.holeList.get(index+1);
+    }
 }

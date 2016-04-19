@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Chris on 12/17/2015.
  */
@@ -56,7 +58,6 @@ public class CourseAdapter extends BaseAdapter
 
     public View getView(final int position, View convertView, ViewGroup parent)
     {
-        // TODO Auto-generated method stub
         Holder holder = new Holder();
         View rowView;
         final Course[] myCourseNames = courseList.getCourseArray();
@@ -78,7 +79,7 @@ public class CourseAdapter extends BaseAdapter
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentGame.setCourseStats(myCourseNames[position]);
+                currentGame.setClickedCourse(myCourseNames[position]);
             }
         });
 

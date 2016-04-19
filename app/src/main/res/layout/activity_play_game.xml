@@ -1,124 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/layout_Play"
-    tools:context=".ChooseCourse"
-    >
+    tools:context="chris.discgolf.PlayGame">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+            <TextView
+                android:id="@+id/play_game_hole_number_text"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="6"
+                android:textSize="155sp"
+                android:includeFontPadding="false"
+                android:gravity="left"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="-5dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/play_game_tee_title"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Tee"
+                android:gravity="center"
+                android:textSize="22sp"
+                android:layout_marginTop="23dp"
+                android:layout_marginRight="19dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/play_game_tee_bottom"
+                />
+
+            <Spinner
+                android:id="@+id/play_game_tee_spinner"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="28dp"
+                android:layout_below="@id/play_game_tee_title">
+
+            </Spinner>
+
+            <TextView
+                android:id="@+id/play_game_length_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Length:"
+                android:textSize="19sp"
+                android:layout_below="@id/play_game_tee_spinner"
+                android:layout_alignLeft="@id/play_game_tee_title"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/play_game_par_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="316ft"
+                android:textSize="19sp"
+                android:layout_alignRight="@id/play_game_tee_title"
+                android:layout_below="@id/play_game_tee_spinner"
+                android:layout_marginRight="5dp"/>
+
+            <TextView
+                android:id="@+id/play_game_par_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Par:"
+                android:textSize="19sp"
+                android:layout_below="@id/play_game_length_title"
+                android:layout_alignLeft="@id/play_game_tee_title"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/play_game_length_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="316ft"
+                android:textSize="19sp"
+                android:layout_alignRight="@id/play_game_tee_title"
+                android:layout_below="@id/play_game_par_text"
+                android:layout_marginRight="5dp"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="555dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
         >
 
-        <EditText
-            android:id="@+id/play_edit"
-            android:layout_width="320dp"
-            android:layout_height="65dp"
-            android:gravity="center"
-            android:textSize="35sp"
-            android:hint="Course Search"
-            android:inputType="textNoSuggestions"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/play_game_player_name"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="0dp"
+                android:text="Jack\nFalconer"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="42sp"
+                android:background="@drawable/play_game_tee_bottom"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_score_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/play_game_player_name"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="-10dp"
+                android:text="+1"
+                android:textSize="90sp"
+                />
+
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hole"
+                android:textSize="20sp"
+                android:layout_alignBottom="@id/play_game_hole_score_text"
+                android:layout_toRightOf="@id/play_game_hole_score_text"
+                android:layout_marginBottom="17dp"/>-->
+
+            <TextView
+                android:id="@+id/play_game_total_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+5"
+                android:textSize="90sp"
+                android:layout_below="@id/play_game_hole_score_text"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="-10dp"
+                android:textColor="@color/light_orange"
+                />
+
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="total"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-thin"
+                android:layout_alignBottom="@id/play_game_total_score"
+                android:layout_toRightOf="@id/play_game_total_score"
+                android:layout_marginBottom="28dp"
+                android:layout_marginLeft="-10dp"
+                android:rotation="-90"
+                />-->
+
+            <TextView
+                android:id="@+id/play_game_hole_button_text"
+
+                android:text="Score"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-thin"
+
+                android:layout_width="wrap_content"
+                android:layout_height="58dp"
+                android:layout_alignRight="@+id/play_game_player_name"
+                android:rotation="-90"
+                android:layout_marginTop="27dp"
+                android:layout_marginRight="-44dp"
+                android:layout_below="@id/play_game_player_name"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_score_add_button"
+
+                android:text="s+"
+                android:textSize="40sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center_vertical|center_horizontal"
+
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_toLeftOf="@id/play_game_hole_button_text"
+                android:layout_below="@id/play_game_player_name"
+                android:layout_marginTop="27dp"
+                android:layout_marginRight="12dp"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_score_minus_button"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:text="s-"
+                android:textSize="45sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center"
+                android:layout_below="@id/play_game_player_name"
+                android:layout_toLeftOf="@id/play_game_hole_score_add_button"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="27dp"
+                />
+
+
+
+
             />
 
-        <ListView
-            android:id="@+id/play_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="340dp"
-            android:background="@drawable/border">
-
-        </ListView>
-
-        <LinearLayout
-            android:layout_width="350dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="35dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="22dp">
-
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="22dp"
-                    android:text="Course Par Avg:"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/play_course_par_avg"
-                    android:layout_width="150dp"
-                    android:layout_height="22dp"
-                    android:text="3"
-                    android:textSize="15sp"
-                    android:gravity="center_horizontal"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="22dp">
-
-                <TextView
-                    android:layout_width="240dp"
-                    android:layout_height="22dp"
-                    android:text="Personal Par Avg:"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/play_personal_par_avg"
-                    android:layout_width="70dp"
-                    android:layout_height="22dp"
-                    android:text="3"
-                    android:textSize="15sp"
-                    android:gravity="center_horizontal"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="22dp">
-
-                <TextView
-                    android:layout_width="240dp"
-                    android:layout_height="22dp"
-                    android:text="Personal Best Par:"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/play_personal_best_par"
-                    android:layout_width="70dp"
-                    android:layout_height="22dp"
-                    android:text="3"
-                    android:textSize="15sp"
-                    android:gravity="center_horizontal"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/play__game_button"
-            android:layout_width="300dp"
-            android:layout_height="75dp"
-            android:text="Play"
-            android:textSize="25dp"/>
+            </RelativeLayout>
 
     </LinearLayout>
 
 </LinearLayout>
-

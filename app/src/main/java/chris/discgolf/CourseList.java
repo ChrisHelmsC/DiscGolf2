@@ -6,7 +6,10 @@ import java.util.List;
 
 /**
  * Created by Chris on 12/17/2015.
+ *
+ * Holds a list of courses, and an int representing the number of courses in the list.
  */
+
 public class CourseList
 {
     int numberOfCourses;
@@ -22,6 +25,14 @@ public class CourseList
     {
         this.courseList = new ArrayList<Course>();
         this.numberOfCourses = 0;
+    }
+
+    /*
+    *   Fills courselist with courses found on file.
+     */
+    public void getCoursesFromFile()
+    {
+
     }
 
     public int getNumberOfCourses() {

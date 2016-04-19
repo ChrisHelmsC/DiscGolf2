@@ -50,7 +50,7 @@ public class NewCourse extends AppCompatActivity
         s = state.getText().toString();
         holes = Integer.parseInt(numberHoles.getText().toString());
 
-        newCourse = new Course(n, c, s, holes);
+        newCourse = new Course(n, c, s);
         newCourse.setHoleList(new ArrayList<Hole>());
 
         Intent myIntent = new Intent(this, NumberPlayers.class);
