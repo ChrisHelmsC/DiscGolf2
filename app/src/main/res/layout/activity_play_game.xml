@@ -14,7 +14,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="-15dp"
+            android:background="@drawable/play_game_top_border">
 
 
 
@@ -22,12 +24,13 @@
                 android:id="@+id/play_game_hole_number_text"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:text="6"
+                android:text="18"
                 android:textSize="155sp"
                 android:includeFontPadding="false"
                 android:gravity="left"
                 android:layout_marginLeft="3dp"
                 android:layout_marginTop="-5dp"
+                android:layout_marginBottom="-15dp"
                 android:layout_alignParentLeft="true" />
 
             <TextView
@@ -64,11 +67,12 @@
                 android:layout_marginLeft="5dp"/>
 
             <TextView
-                android:id="@+id/play_game_par_text"
+                android:id="@+id/play_game_length_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="316ft"
                 android:textSize="19sp"
+                android:fontFamily="monospace"
                 android:layout_alignRight="@id/play_game_tee_title"
                 android:layout_below="@id/play_game_tee_spinner"
                 android:layout_marginRight="5dp"/>
@@ -84,13 +88,14 @@
                 android:layout_marginLeft="5dp"/>
 
             <TextView
-                android:id="@+id/play_game_length_text"
+                android:id="@+id/play_game_par_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="316ft"
+                android:text="3st"
                 android:textSize="19sp"
+                android:fontFamily="monospace"
                 android:layout_alignRight="@id/play_game_tee_title"
-                android:layout_below="@id/play_game_par_text"
+                android:layout_below="@id/play_game_length_text"
                 android:layout_marginRight="5dp"/>
 
         </RelativeLayout>
@@ -106,7 +111,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp">
 
             <TextView
                 android:id="@+id/play_game_player_name"
@@ -123,6 +129,83 @@
                 />
 
             <TextView
+                android:id="@+id/play_game_course_avg_display"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="+ 0"
+                android:textSize="16sp"
+                android:fontFamily="monospace"
+                android:layout_alignRight="@id/play_game_player_name"
+                android:layout_marginTop="11dp"
+                android:layout_alignTop="@id/play_game_player_name" />
+
+            <TextView
+                android:id="@+id/play_game_course_avg"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/play_game_course_avg"
+                android:textSize="16sp"
+                android:layout_toLeftOf="@id/play_game_course_avg_display"
+                android:layout_alignTop="@id/play_game_course_avg_display"/>
+
+            <TextView
+                android:id="@+id/play_game_course_best_display"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="-12"
+                android:textSize="16sp"
+                android:fontFamily="monospace"
+                android:layout_alignRight="@id/play_game_player_name"
+                android:layout_below="@id/play_game_course_avg_display"
+                />
+
+            <TextView
+                android:id="@+id/play_game_course_best"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/play_game_course_best"
+                android:textSize="16sp"
+                android:layout_toLeftOf="@id/play_game_course_best_display"
+                android:layout_alignTop="@id/play_game_course_best_display"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_avg_display"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="+ 1"
+                android:textSize="16sp"
+                android:fontFamily="monospace"
+                android:layout_alignRight="@id/play_game_player_name"
+                android:layout_below="@id/play_game_course_best_display"/>
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/play_game_hole_avg"
+                android:textSize="16sp"
+                android:layout_toLeftOf="@id/play_game_hole_avg_display"
+                android:layout_alignTop="@id/play_game_hole_avg_display"/>
+
+            <TextView
+                android:id="@+id/play_game_hole_best_display"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="+ 0"
+                android:textSize="16sp"
+                android:fontFamily="monospace"
+                android:layout_alignRight="@id/play_game_player_name"
+                android:layout_below="@id/play_game_hole_avg_display"/>
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/play_game_hole_best"
+                android:textSize="16sp"
+                android:layout_toLeftOf="@+id/play_game_hole_best_display"
+                android:layout_alignTop="@+id/play_game_hole_best_display"/>
+
+            <TextView
                 android:id="@+id/play_game_hole_score_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -131,7 +214,7 @@
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="-10dp"
                 android:text="+1"
-                android:textSize="90sp"
+                android:textSize="100sp"
                 />
 
             <!--<TextView
@@ -148,11 +231,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+5"
-                android:textSize="90sp"
+                android:textSize="100sp"
                 android:layout_below="@id/play_game_hole_score_text"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="18dp"
-                android:layout_marginTop="-10dp"
+                android:layout_marginTop="-27dp"
                 android:textColor="@color/light_orange"
                 />
 
@@ -171,7 +254,7 @@
                 />-->
 
             <TextView
-                android:id="@+id/play_game_hole_button_text"
+                android:id="@+id/play_game_hole_score_button_text"
 
                 android:text="Score"
                 android:textSize="13sp"
@@ -196,9 +279,9 @@
 
                 android:layout_width="58dp"
                 android:layout_height="58dp"
-                android:layout_toLeftOf="@id/play_game_hole_button_text"
+                android:layout_toLeftOf="@id/play_game_hole_score_button_text"
                 android:layout_below="@id/play_game_player_name"
-                android:layout_marginTop="27dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="12dp"
                 />
 
@@ -207,17 +290,90 @@
                 android:layout_width="58dp"
                 android:layout_height="58dp"
                 android:text="s-"
-                android:textSize="45sp"
+                android:textSize="40sp"
                 android:background="@drawable/edit_text_drawable"
-                android:gravity="center"
+                android:gravity="center_vertical|center_horizontal"
                 android:layout_below="@id/play_game_player_name"
                 android:layout_toLeftOf="@id/play_game_hole_score_add_button"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="27dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
                 />
 
+            <TextView
+                android:id="@+id/play_game_hole_plus_button"
 
+                android:text="h+"
+                android:textSize="40sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center_vertical|center_horizontal"
 
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_toLeftOf="@id/play_game_hole_score_button_text"
+                android:layout_below="@+id/play_game_hole_score_add_button"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_minus_button"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:text="h-"
+                android:textSize="40sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_below="@+id/play_game_hole_score_minus_button"
+                android:layout_toLeftOf="@id/play_game_hole_score_add_button"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                />
+
+            <TextView
+                android:id="@+id/play_game_hole_increment_button_text"
+
+                android:text="Hole"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-thin"
+
+                android:layout_width="wrap_content"
+                android:layout_height="58dp"
+                android:layout_alignRight="@+id/play_game_player_name"
+                android:rotation="-90"
+                android:layout_marginTop="7dp"
+                android:layout_marginRight="-44dp"
+                android:layout_below="@+id/play_game_hole_score_button_text"
+                />
+
+            <TextView
+                android:id="@+id/play_game_player_plus_button"
+
+                android:text="p+"
+                android:textSize="40sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center_vertical|center_horizontal"
+
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_toLeftOf="@id/play_game_hole_score_button_text"
+                android:layout_below="@+id/play_game_hole_plus_button"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp"
+                />
+
+            <TextView
+                android:id="@+id/play_game_player_minus_button"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:text="p-"
+                android:textSize="40sp"
+                android:background="@drawable/edit_text_drawable"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_below="@+id/play_game_hole_minus_button"
+                android:layout_toLeftOf="@id/play_game_hole_score_add_button"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                />
 
             />
 

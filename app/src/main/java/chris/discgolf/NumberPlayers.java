@@ -76,7 +76,7 @@ public class NumberPlayers extends AppCompatActivity
         i.putExtra("course", c);
 
         //Add Players to extras
-        i.putExtra("playerList", playingPlayers);
+        i.putExtra("playerList", playingPlayers.getPlayerList());
 
         //Start rungame activity
         startActivity(i);

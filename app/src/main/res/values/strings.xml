@@ -18,5 +18,11 @@
     <string name="number_players_title">Select Players</string>
     <string name="number_players_play_button">Play!</string>
 
+    <!--Play_game-->
+    <string name="play_game_course_avg">Course Avg:</string>
+    <string name="play_game_course_best">Course Best:</string>
+    <string name="play_game_hole_avg">Tee Avg:</string>
+    <string name="play_game_hole_best">Tee Best:</string>
+
     <color name="light_orange2">#ff8433</color>
 </resources>

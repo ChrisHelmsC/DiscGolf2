@@ -103,4 +103,19 @@ public class Hole implements Parcelable {
 
         return spNames;
     }
+
+    //Returns the HoleStartingPoint from this hole with name matching
+    //holeName.
+    public HoleStartingPoint getStartingPointByName(String holeName)
+    {
+        for(HoleStartingPoint sp : startingPoints)
+        {
+            if(sp.getName() == holeName)
+            {
+                return sp;
+            }
+        }
+
+        return null;
+    }
 }

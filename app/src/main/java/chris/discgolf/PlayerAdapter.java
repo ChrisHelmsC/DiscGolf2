@@ -66,7 +66,7 @@ public class PlayerAdapter extends BaseAdapter
 
     public int getCount()
     {
-        return numberPlayers.playerList.size();
+        return numberPlayers.playerList.getPlayerList().size();
     }
 
     public Object getItem(int position)
@@ -104,11 +104,11 @@ public class PlayerAdapter extends BaseAdapter
 
                 if(holder.checkBox.isChecked())
                 {
-                    numberPlayers.playingPlayers.add(numberPlayers.playerList.get(position));
+                    numberPlayers.playingPlayers.getPlayerList().add(numberPlayers.playerList.getPlayerList().get(position));
                 }
                 else
                 {
-                    numberPlayers.playingPlayers.remove(numberPlayers.playerList.get(position));
+                    numberPlayers.playingPlayers.getPlayerList().remove(numberPlayers.playerList.getPlayerList().get(position));
                 }
             }
         });

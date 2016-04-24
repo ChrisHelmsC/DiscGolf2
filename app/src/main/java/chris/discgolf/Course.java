@@ -138,7 +138,25 @@ public class Course implements Parcelable {
         //Get index of h
         int index = this.holeList.indexOf(h);
 
+        //If end of holeList, return null
+        if(index == holeList.size()-1)
+        {
+            return null;
+        }
         //Return next hole
         return this.holeList.get(index+1);
+    }
+
+    //Returns hole in list that comes before h
+    public Hole getPreviousHole(Hole h)
+    {
+        int index = this.holeList.indexOf(h);
+
+        if(index == 0)
+        {
+            return h;
+        }
+
+        return this.holeList.get(index - 1);
     }
 }

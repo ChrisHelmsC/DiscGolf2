@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by Chris on 4/3/2016.
  */
 public class Player implements Parcelable {
+
     private int id;
     private String firstName;
     private String lastName;
@@ -14,7 +15,7 @@ public class Player implements Parcelable {
 
     public Player(int id, String f, String n, int tp)
     {
-        this.timesPlayed = id;
+        this.id = id;
         this.firstName = f;
         this.lastName = n;
         this.timesPlayed = tp;
@@ -25,6 +26,14 @@ public class Player implements Parcelable {
         this.firstName = f;
         this.lastName = n;
         this.timesPlayed = 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {

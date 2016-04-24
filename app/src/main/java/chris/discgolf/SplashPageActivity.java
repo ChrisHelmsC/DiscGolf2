@@ -35,6 +35,9 @@ public class SplashPageActivity extends AppCompatActivity {
             DB.addHoles(qdb);
             DB.addStartingPoints(qdb);
             DB.addPlayers(qdb);
+            DB.addGames(qdb);
+            DB.addStartingPointScores(qdb);
+            DB.addCourseScores(qdb);
         }
 
         //Launch HomeScreen
