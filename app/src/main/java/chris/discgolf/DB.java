@@ -53,6 +53,8 @@ CREATE TABLE games (_id INTEGER PRIMARY KEY AUTOINCREMENT, course_id INTEGER NOT
 CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_number INTEGER, startingpoint_name TEXT, INTEGER, player_id INTEGER, score INTEGER, FOREIGN KEY(course_id) REFERENCES courses(_id), FOREIGN KEY(game_id) REFERENCES games(_id), FOREIGN KEY(hole_number) REFERENCES holes(number), FOREIGN KEY(startingpoint_name) REFERENCES startingPoints(name), FOREIGN KEY(player_id) REFERENCES players(id), PRIMARY KEY (course_id, game_id, hole_number, startingpoint_name, player_id));
      */
 
+    //Creates database tables.
+    //REQ IDs: 28-35.
     @Override
     public void onCreate(SQLiteDatabase db)
     {
@@ -106,9 +108,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', 'Select to Add a New Course', '');");
     }
 
-    /*
-    * Adds holes for testing purposes
-     */
+    // Adds holes for testing purposes
     public static void addHoles(SQLiteDatabase db)
     {
         db.execSQL("INSERT into holes (course_id, number, par) values (1, 1, 3);");
@@ -132,6 +132,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     public static void addGames(SQLiteDatabase db)
     {
         db.execSQL("INSERT INTO games (course_id, datePlayed) values (2, '2008/08/02');");
+        db.execSQL("INSERT INTO games (course_id, datePlayed) values (1, '2008/08/09');");
     }
 
     public static void addStartingPointScores(SQLiteDatabase db)
@@ -146,10 +147,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         db.execSQL("INSERT INTO courseScores VALUES ( 2, 1, 1, 'White', 2);");
     }
 
-
-    /*
-    * returns true if db is empty, and false if not
-     */
+    //returns true if db is empty, and false if not
     public static boolean dbIsEmpty(SQLiteDatabase db)
     {
         Cursor simpleQuery = db.rawQuery("SELECT * FROM courses;", null);
@@ -165,11 +163,43 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         insertGameIntoDatabase(db, game);
         insertCourseScoresIntoDatabase(db, game);
         insertHoleScoresIntoDatabase(db, game);
+        insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
+    }
+
+    //Cleans out all tables in DB
+    public static void cleanOutDB(SQLiteDatabase db)
+    {
+        deleteAllFromPlayedIn(db);
+        deleteAllCourseScores(db);
+        deleteAllStartingPointScores(db);
+        deleteAllGames(db);
+        deleteAllStartingPoints(db);
+        deleteAllHoles(db);
+        deleteAllFromCourse(db);
+        deleteAllPlayers(db);
     }
 
     /*============================================================================================================
      * !!! THE FOLLOWING FUNCTIONS ARE FOR GAMES
      */
+
+    //Returns a game object associated with game_id
+    public static Game getGameById(SQLiteDatabase db, int game_id)
+    {
+        Game g;
+
+        Cursor cursor = db.rawQuery("SELECT * FROM GAMES WHERE _id = " + Integer.toString(game_id) + ";", null);
+
+        cursor.moveToFirst();
+
+        PlayerList pl = new PlayerList();
+        pl.setWithList(getPlayersInGame(cursor.getInt(0), db));
+        g = new Game(DB.getCourseByID(cursor.getInt(1), db), pl);
+        g.setID(game_id);
+        g.setCourseScoreList(getCourseScoresForGame(game_id, db));
+
+        return g;
+    }
 
     public static List<Game> getAllGames(SQLiteDatabase db)
     {
@@ -207,15 +237,26 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         game.setID(getNextGameId(db));
 
         db.execSQL("INSERT INTO games (course_id, datePlayed) values (" + Integer.toString(courseId) + ", " + finalTimeStamp + ");");
-        insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
     }
 
     //Gets ID that will be given to next game inserted into DB
-    private static int getNextGameId(SQLiteDatabase db)
+    public static int getNextGameId(SQLiteDatabase db)
     {
         Cursor gameCursor = db.rawQuery("SELECT * FROM GAMES", null);
+
+        if(gameCursor.getCount() == 0)
+        {
+            return 1;
+        }
+
         gameCursor.moveToLast();
         return gameCursor.getInt(0) + 1;
+    }
+
+    //Deletes all games from DB
+    public static void deleteAllGames(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM GAMES;");
     }
 
     /*============================================================================================================
@@ -225,38 +266,17 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     //Deletes all records from course table
     public static void deleteAllFromCourse(SQLiteDatabase db)
     {
-        db.execSQL("DELETE FROM COURSES");
+        db.execSQL("DELETE FROM COURSES;");
     }
 
     //Returns course with _id equal to id;
-    private static Course getCourseByID(int id, SQLiteDatabase db)
+    public static Course getCourseByID(int id, SQLiteDatabase db)
     {
-        Cursor courseCursor = db.rawQuery("SELECT * FROM COURSES WHERE _id = " + Integer.toString(id)+";", null);
+        Cursor courseCursor = db.rawQuery("SELECT * FROM COURSES WHERE _id = " + Integer.toString(id) + ";", null);
 
         courseCursor.moveToFirst();
 
         return new Course(courseCursor.getInt(0), courseCursor.getString(1), courseCursor.getString(3), courseCursor.getString(2), getCourseHoles(courseCursor.getInt(0), db));
-    }
-
-    //Inserts the course scores from game g into the database
-    private static void insertCourseScoresIntoDatabase(SQLiteDatabase db, Game g)
-    {
-        List<CourseScore> csl = g.getCourseScoreList();
-
-        String gameID = Integer.toString(g.getID());
-        String courseID = Integer.toString(g.getCourse().getId());
-        String playerID, teeName, score;
-
-
-        for(CourseScore cs: csl)
-        {
-            playerID = Integer.toString(cs.getPlayer().getId());
-            teeName = cs.getGameTee();
-            score = Integer.toString(cs.getScore());
-
-            db.execSQL("INSERT INTO courseScores VALUES (" + gameID + ", " + courseID + ", " + playerID + ", '" + teeName + "', " + score +  ");");
-            int i = 0;
-        }
     }
 
     /*
@@ -285,60 +305,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         //Return list
         return courseList;
-    }
-
-    //Returns course average from a certain Tee
-    public static int getCourseAverageForTee(int course_id, int player_id, String tee_name, SQLiteDatabase db) {
-        Cursor testCursor = db.rawQuery("SELECT score FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
-                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "';", null);
-
-        if(testCursor.getCount() == 0)
-        {
-            return NO_RESULTS;
-        }
-
-        Cursor courseAvgCursor = db.rawQuery("SELECT avg(score) FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
-                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "';", null);
-
-        courseAvgCursor.moveToFirst();
-
-        double roundedScore = Math.round(courseAvgCursor.getDouble(0));
-
-        return (int)roundedScore;
-    }
-
-    //Returns course best for specific tee on specific player
-    public static int getCourseBestForTee(int course_id, int player_id, String tee_name, SQLiteDatabase db)
-    {
-        Cursor bestCursor = db.rawQuery("SELECT score FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
-                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "' ORDER BY score ASC;", null);
-
-        if(bestCursor.getCount() <= 0)
-        {
-            return NO_RESULTS;
-        }
-
-        bestCursor.moveToFirst();
-
-        return bestCursor.getInt(0);
-    }
-
-    //Returns all course scores for a specific game
-    public static List<CourseScore> getCourseScoresForGame(int gameID, SQLiteDatabase db)
-    {
-        List<CourseScore> csList = new ArrayList<CourseScore>();
-
-        Cursor csCursor = db.rawQuery("SELECT * FROM COURSESCORES WHERE game_id = " + Integer.toString(gameID)+";" ,null);
-
-        csCursor.moveToFirst();
-
-        while(csCursor.getPosition() < csCursor.getCount())
-        {
-            csList.add(new CourseScore(getPlayerById(csCursor.getInt(2), db), getCourseByID(csCursor.getInt(1), db)));
-            csCursor.moveToNext();
-        }
-
-        return csList;
     }
 
     /*==================================================================================================================
@@ -373,59 +339,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return holeList;
     }
 
-    //Returns best score a player got on a specific starting point
-    public static int getStartingPointBest(int courseId, int holeNumber, String spName, int playerId, SQLiteDatabase db)
-    {
-        Cursor bestCursor = db.rawQuery("Select startingPointScores.score " +
-                "FROM startingPointScores " +
-                "WHERE course_id = " + Integer.toString(courseId) +
-                " AND hole_number = " + Integer.toString(holeNumber) +
-                " AND startingpoint_name = '" + spName + "'" +
-                " AND player_id = " + Integer.toString(playerId) +
-                " ORDER BY score ASC;", null);
-
-        if(bestCursor.getCount() ==0)
-        {
-            return NO_RESULTS;
-        }
-
-        //Move cursor to first position
-        bestCursor.moveToFirst();
-
-        return bestCursor.getInt(0);
-    }
-
-    //Returns players average score on a specific hole from a certain starting point
-    public static int getStartingPointAvg(int courseId, int holeNumber, String spName, int playerId, SQLiteDatabase db)
-    {
-        Cursor checkCursor = db.rawQuery("Select score " +
-                "FROM startingPointScores " +
-                "WHERE course_id = " + Integer.toString(courseId) +
-                " AND hole_number = " + Integer.toString(holeNumber) +
-                " AND startingpoint_name = '" + spName + "'" +
-                " AND player_id = " + Integer.toString(playerId) +
-                ";", null);
-
-        if(checkCursor.getCount() == 0)
-        {
-            return NO_RESULTS;
-        }
-
-        Cursor avgCursor = db.rawQuery("Select avg(score) " +
-                "FROM startingPointScores " +
-                "WHERE course_id = " + Integer.toString(courseId) +
-                " AND hole_number = " + Integer.toString(holeNumber) +
-                " AND startingpoint_name = '" + spName + "'" +
-                " AND player_id = " + Integer.toString(playerId) +
-                ";", null);
-
-        avgCursor.moveToFirst();
-
-        double avgScore = Math.round(avgCursor.getDouble(0));
-
-        return (int)avgScore;
-    }
-
     //Inserts each of the holescores from game into the database
     private static void insertHoleScoresIntoDatabase(SQLiteDatabase db, Game game)
     {
@@ -447,6 +360,30 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
                 db.execSQL("INSERT INTO startingpointscores VALUES (" + gameID + ", " + courseID + ", " + holeNumber + ", '" + startingPointName + "', " + playerID + ", " + score + ");");
             }
         }
+    }
+
+    //Deletes all holes from DB
+    public static void deleteAllHoles(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM HOLES;");
+    }
+
+    //Get a list of all holes in DB
+    public static List<Hole> getAllHoles(SQLiteDatabase db)
+    {
+        List<Hole> hList = new ArrayList<Hole>();
+
+        Cursor holeCursor = db.rawQuery("SELECT * FROM HOLES;", null);
+
+        holeCursor.moveToFirst();
+
+        while(holeCursor.getPosition() < holeCursor.getCount())
+        {
+            hList.add(new Hole(holeCursor.getInt(1), holeCursor.getInt(2), getHoleStartingPoints(holeCursor.getInt(0), holeCursor.getInt(1), db)));
+            holeCursor.moveToNext();
+        }
+
+        return hList;
     }
 
     /*==================================================================================================================
@@ -529,6 +466,30 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return spList;
     }
 
+    //Deletes all starting points from database
+    public static void deleteAllStartingPoints(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM STARTINGPOINTS");
+    }
+
+    //Get a list of all startingPoints in db
+    public static List<HoleStartingPoint> getAllStartingPoints(SQLiteDatabase db)
+    {
+        List<HoleStartingPoint> hsList = new ArrayList<HoleStartingPoint>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM STARTINGPOINTS", null);
+
+        cursor.moveToFirst();
+
+        while(cursor.getPosition() < cursor.getCount())
+        {
+            hsList.add(new HoleStartingPoint(cursor.getString(2), cursor.getInt(3)));
+            cursor.moveToNext();
+        }
+
+        return hsList;
+    }
+
         /*==================================================================================================================
      * !!!! THE FOLLOWING FUNCTIONS ARE FOR PLAYED_IN
      */
@@ -558,4 +519,195 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
                 db.execSQL("INSERT INTO playedin values (" + Integer.toString(gameId) + ", " + pList.get(i).getId() + ");");
             }
         }
+
+    //Deletes all records from played in
+    public static void deleteAllFromPlayedIn(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM PLAYEDIN;");
+    }
+
+    /*==================================================================================================================
+     * !!!! THE FOLLOWING FUNCTIONS ARE FOR STARTINGPOINTSCORES !!!!
+     */
+
+    //Returns best score a player got on a specific starting point
+    public static int getStartingPointBest(int courseId, int holeNumber, String spName, int playerId, SQLiteDatabase db)
+    {
+        Cursor bestCursor = db.rawQuery("Select startingPointScores.score " +
+                "FROM startingPointScores " +
+                "WHERE course_id = " + Integer.toString(courseId) +
+                " AND hole_number = " + Integer.toString(holeNumber) +
+                " AND startingpoint_name = '" + spName + "'" +
+                " AND player_id = " + Integer.toString(playerId) +
+                " ORDER BY score ASC;", null);
+
+        if(bestCursor.getCount() ==0)
+        {
+            return NO_RESULTS;
+        }
+
+        //Move cursor to first position
+        bestCursor.moveToFirst();
+
+        return bestCursor.getInt(0);
+    }
+
+    //Returns players average score on a specific hole from a certain starting point
+    public static int getStartingPointAvg(int courseId, int holeNumber, String spName, int playerId, SQLiteDatabase db)
+    {
+        Cursor checkCursor = db.rawQuery("Select score " +
+                "FROM startingPointScores " +
+                "WHERE course_id = " + Integer.toString(courseId) +
+                " AND hole_number = " + Integer.toString(holeNumber) +
+                " AND startingpoint_name = '" + spName + "'" +
+                " AND player_id = " + Integer.toString(playerId) +
+                ";", null);
+
+        if(checkCursor.getCount() == 0)
+        {
+            return NO_RESULTS;
+        }
+
+        Cursor avgCursor = db.rawQuery("Select avg(score) " +
+                "FROM startingPointScores " +
+                "WHERE course_id = " + Integer.toString(courseId) +
+                " AND hole_number = " + Integer.toString(holeNumber) +
+                " AND startingpoint_name = '" + spName + "'" +
+                " AND player_id = " + Integer.toString(playerId) +
+                ";", null);
+
+        avgCursor.moveToFirst();
+
+        double avgScore = Math.round(avgCursor.getDouble(0));
+
+        return (int)avgScore;
+    }
+
+    //Deletes all startingPoints from DB
+    public static void deleteAllStartingPointScores(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM STARTINGPOINTSCORES;");
+    }
+
+    //Returns course average from a certain Tee
+    public static int getCourseAverageForTee(int course_id, int player_id, String tee_name, SQLiteDatabase db) {
+        Cursor testCursor = db.rawQuery("SELECT score FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
+                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "';", null);
+
+        if(testCursor.getCount() == 0)
+        {
+            return NO_RESULTS;
+        }
+
+        Cursor courseAvgCursor = db.rawQuery("SELECT avg(score) FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
+                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "';", null);
+
+        courseAvgCursor.moveToFirst();
+
+        double roundedScore = Math.round(courseAvgCursor.getDouble(0));
+
+        return (int)roundedScore;
+    }
+
+    //Returns course best for specific tee on specific player
+    public static int getCourseBestForTee(int course_id, int player_id, String tee_name, SQLiteDatabase db)
+    {
+        Cursor bestCursor = db.rawQuery("SELECT score FROM courseScores WHERE course_id = " + Integer.toString(course_id) +
+                " AND player_id = " + Integer.toString(player_id) + " AND tee_name = '" + tee_name + "' ORDER BY score ASC;", null);
+
+        if(bestCursor.getCount() <= 0)
+        {
+            return NO_RESULTS;
+        }
+
+        bestCursor.moveToFirst();
+
+        return bestCursor.getInt(0);
+    }
+
+    //Returns a list of all StartingPointScores in DB
+    public static List<HoleScore> getAllStartingPointScores(SQLiteDatabase db)
+    {
+        List<HoleScore> lHSP = new ArrayList<HoleScore>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM STARTINGPOINTSCORES;", null);
+
+        cursor.moveToFirst();
+
+        while(cursor.getPosition() < cursor.getCount())
+        {
+            lHSP.add(new HoleScore(getPlayerById(cursor.getInt(4), db), cursor.getInt(5), cursor.getInt(2), cursor.getString(3)));
+            cursor.moveToNext();
+        }
+
+        return lHSP;
+    }
+
+    /*============================================================================================================
+     * !!!! THE FOLLOWING FUNCTIONS ARE FOR COURSESCORES !!!!
+     */
+
+    //Inserts the course scores from game g into the database
+    public static void insertCourseScoresIntoDatabase(SQLiteDatabase db, Game g)
+    {
+        List<CourseScore> csl = g.getCourseScoreList();
+
+        String gameID = Integer.toString(g.getID());
+        String courseID = Integer.toString(g.getCourse().getId());
+        String playerID, teeName, score;
+
+
+        for(CourseScore cs: csl)
+        {
+            playerID = Integer.toString(cs.getPlayer().getId());
+            teeName = cs.getGameTee();
+            score = Integer.toString(cs.getScore());
+
+            db.execSQL("INSERT INTO courseScores VALUES (" + gameID + ", " + courseID + ", " + playerID + ", '" + teeName + "', " + score +  ");");
+            int i = 0;
+        }
+    }
+
+    //Returns all course scores for a specific game
+    public static List<CourseScore> getCourseScoresForGame(int gameID, SQLiteDatabase db)
+    {
+        List<CourseScore> csList = new ArrayList<CourseScore>();
+
+        Cursor csCursor = db.rawQuery("SELECT * FROM COURSESCORES WHERE game_id = " + Integer.toString(gameID) + ";", null);
+
+        csCursor.moveToFirst();
+
+        while(csCursor.getPosition() < csCursor.getCount())
+        {
+            csList.add(new CourseScore(getPlayerById(csCursor.getInt(2), db), getCourseByID(csCursor.getInt(1), db)));
+            csCursor.moveToNext();
+        }
+
+        return csList;
+    }
+
+    //Deletes all course scores from DB
+    public static void deleteAllCourseScores(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM COURSESCORES;");
+    }
+
+    //Get a list of all course scores currently in DB
+    public static List<CourseScore> getAllCourseScores(SQLiteDatabase db)
+    {
+        List<CourseScore> csList = new ArrayList<CourseScore>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM COURSESCORES;" ,null);
+
+        cursor.moveToFirst();
+
+        while(cursor.getPosition() < cursor.getCount())
+        {
+            csList.add(new CourseScore(getPlayerById(cursor.getInt(2), db), getCourseByID(cursor.getInt(1), db)));
+            cursor.moveToNext();
+        }
+
+        return csList;
+    }
+
 }

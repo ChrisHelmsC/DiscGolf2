@@ -27,14 +27,6 @@ public class CourseList
         this.numberOfCourses = 0;
     }
 
-    /*
-    *   Fills courselist with courses found on file.
-     */
-    public void getCoursesFromFile()
-    {
-
-    }
-
     public int getNumberOfCourses() {
         return numberOfCourses;
     }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class NumberPlayers extends AppCompatActivity
+public class ChoosePlayers extends AppCompatActivity
 {
     private Button confirm;                             //Buttons for adding, subtracting players, confirming list
     private PlayerAdapter playerAdapter;                //Adapter for player List

@@ -138,7 +138,7 @@ public class ChooseCourse extends AppCompatActivity {
         else
         {
             //Otherwise, get the selected course, and go to player screen
-            Intent IT = new Intent(this, NumberPlayers.class);
+            Intent IT = new Intent(this, ChoosePlayers.class);
             IT.putExtra("course", c);
             IT.putParcelableArrayListExtra("holes", (ArrayList)c.getHoleList());
             startActivity(IT);

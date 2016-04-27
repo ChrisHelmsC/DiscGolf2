@@ -15,6 +15,14 @@ public class HoleScore
 
     }
 
+    public HoleScore(Player p, int s, int hN, String name)
+    {
+        player = p;
+        score = s;
+        holeNumber = hN;
+        holeName = name;
+    }
+
     public String getHoleName() {
         return holeName;
     }

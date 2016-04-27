@@ -41,9 +41,29 @@ public class TestingActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 testButton.setText(R.string.test_activity_test_button_testing);
+                runTests();
                 testListView.setAdapter(adapter);
                 testButton.setText(R.string.test_activity_test_button);
             }
         });
     }
+
+    public void cleanUpTestDB()
+    {
+        //Delete previous testDB
+        this.deleteDatabase("testdb.s3db");
+        //Init new DB
+        DB database = new DB(this, "testdb.s3db");
+        qdb = database.getWritableDatabase();
+    }
+
+    public void runTests()
+    {
+        for(int i = 0; i < testList.size(); i++)
+        {
+            testList.get(i).setPassed(testList.get(i).runTest(qdb));
+            cleanUpTestDB();
+        }
+    }
+
 }

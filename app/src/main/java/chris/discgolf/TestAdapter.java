@@ -59,7 +59,7 @@ public class TestAdapter extends BaseAdapter
 
         holder.description.setText("TestID - " + temp.testID + ", ReqID - " + temp.req_id + ":\n" + temp.description);
 
-        if(temp.runTest(activity.qdb))
+        if(temp.isPassed())
         {
             holder.status.setText("Passed");
             holder.status.setTextColor(ContextCompat.getColor(context, R.color.pass_green));

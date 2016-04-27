@@ -1,20 +1,15 @@
 package chris.discgolf;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by Chris on 12/20/2015.
@@ -22,13 +17,13 @@ import java.util.ListIterator;
 public class PlayerAdapter extends BaseAdapter
 {
     Context context;
-    NumberPlayers numberPlayers;
+    ChoosePlayers choosePlayers;
     private static LayoutInflater inflater = null;
 
-    public PlayerAdapter(NumberPlayers numPlay)
+    public PlayerAdapter(ChoosePlayers numPlay)
     {
         context = numPlay;
-        numberPlayers = numPlay;
+        choosePlayers = numPlay;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -40,12 +35,12 @@ public class PlayerAdapter extends BaseAdapter
         PlayerAdapter.inflater = inflater;
     }
 
-    public NumberPlayers getNumberPlayers() {
-        return numberPlayers;
+    public ChoosePlayers getChoosePlayers() {
+        return choosePlayers;
     }
 
-    public void setNumberPlayers(NumberPlayers numberPlayers) {
-        this.numberPlayers = numberPlayers;
+    public void setChoosePlayers(ChoosePlayers choosePlayers) {
+        this.choosePlayers = choosePlayers;
     }
 
     public Context getContext() {
@@ -57,16 +52,16 @@ public class PlayerAdapter extends BaseAdapter
     }
 
     public PlayerList getPlayerList() {
-        return numberPlayers.playerList;
+        return choosePlayers.playerList;
     }
 
     public void setPlayerList(PlayerList playerList) {
-        this.numberPlayers.playerList = playerList;
+        this.choosePlayers.playerList = playerList;
     }
 
     public int getCount()
     {
-        return numberPlayers.playerList.getPlayerList().size();
+        return choosePlayers.playerList.getPlayerList().size();
     }
 
     public Object getItem(int position)
@@ -89,7 +84,7 @@ public class PlayerAdapter extends BaseAdapter
     {
         final Holder holder = new Holder();
         final View rowView;
-        String[] myPlayerNames = stringListToArray(numberPlayers.playerList.getPlayerNames());
+        String[] myPlayerNames = stringListToArray(choosePlayers.playerList.getPlayerNames());
 
         rowView = inflater.inflate(R.layout.player_view, null);
         holder.checkBox = (CheckBox) rowView.findViewById(R.id.player_view_check_box);
@@ -104,11 +99,11 @@ public class PlayerAdapter extends BaseAdapter
 
                 if(holder.checkBox.isChecked())
                 {
-                    numberPlayers.playingPlayers.getPlayerList().add(numberPlayers.playerList.getPlayerList().get(position));
+                    choosePlayers.playingPlayers.getPlayerList().add(choosePlayers.playerList.getPlayerList().get(position));
                 }
                 else
                 {
-                    numberPlayers.playingPlayers.getPlayerList().remove(numberPlayers.playerList.getPlayerList().get(position));
+                    choosePlayers.playingPlayers.getPlayerList().remove(choosePlayers.playerList.getPlayerList().get(position));
                 }
             }
         });

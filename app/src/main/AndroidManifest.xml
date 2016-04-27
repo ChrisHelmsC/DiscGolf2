@@ -19,7 +19,7 @@
             android:name=".NewCourse"
             android:label="Add New Course" />
         <activity
-            android:name=".NumberPlayers"
+            android:name=".ChoosePlayers"
             android:label="Add Players"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
