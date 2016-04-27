@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="whiteText">#ffffff</color>
+    <color name="light_orange2">#ff8433</color>
     <color name="light_orange">#ff8533</color>
+    <color name="fail_red">#ef2637</color>
+    <color name="pass_green">#39ba28</color>
 
 </resources>

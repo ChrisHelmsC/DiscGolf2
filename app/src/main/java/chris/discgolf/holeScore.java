@@ -3,19 +3,16 @@ package chris.discgolf;
 /**
  * Created by Chris on 4/24/2016.
  */
-public class holeScore
+public class HoleScore
 {
     Player player;      //Player who got the score
     int score;          //Score player got on hole
     int holeNumber;     //Hole number score was on
     String holeName;    //name of tee on hole
 
-    public holeScore(Player p, int s, int hNum, String hName)
+    public HoleScore()
     {
-        player = p;
-        score = s;
-        holeNumber = hNum;
-        holeName = hName;
+
     }
 
     public String getHoleName() {

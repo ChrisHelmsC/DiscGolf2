@@ -1,12 +1,12 @@
 package chris.discgolf;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -29,11 +29,9 @@ import java.util.List;
 
 public class PlayGame extends AppCompatActivity
 {
-    private PlayerList playerList;          //List of players in game
-    private List<holeScore>currentHSList;   //Current list of hole scores
+    Game thisGame;                          //Current game information
+    private List<HoleScore>currentHSList;   //Current list of hole scores
     private Player currentPlayer;           //Current player represented on screen
-    private Course course;                  //Course
-
     private Hole currentHole;               //Current Hole
     private Spinner teeSelectorSpinner;     //Tee Spinner
     private HoleStartingPoint currentSP;    //Currently selected starting point
@@ -49,22 +47,27 @@ public class PlayGame extends AppCompatActivity
     private TextView playerCourAvgDisplay;  //Displays players course avg
     private TextView playerCourBestDisplay; //Displays players course best
 
+    private TextView playerHoleScoreDisp;   //Displays player's hole score
+    private TextView playerCourseScoreDisp; //Displays player's course score
+
     private TextView playerPlusButton;      //Changes to next player
     private TextView playerMinusButton;     //Changes to previousPlayer;
     private TextView holePlusButton;        //Increment Hole
     private TextView holeMinusButton;       //Decrement Hole
+    private TextView scorePlusButton;       //Increment score
+    private TextView scoreMinusButton;      //Decrement score
 
     private SQLiteDatabase qdb;             //Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        //Get passed in course
+        //Get passed in extras, create new game
         Bundle extras = getIntent().getExtras();
-        course = (Course)extras.get("course");
+        thisGame = new Game((Course)extras.get("course"), new PlayerList((ArrayList<Player>)extras.get("playerList")));
 
         super.onCreate(savedInstanceState);
-        setTitle(course.getCourseName());
+        setTitle(thisGame.getCourse().getCourseName());
         setContentView(R.layout.activity_play_game);
 
         //Init Database
@@ -79,26 +82,31 @@ public class PlayGame extends AppCompatActivity
         playerCourAvgDisplay = (TextView)findViewById(R.id.play_game_course_avg_display);
         playerCourBestDisplay = (TextView)findViewById(R.id.play_game_course_best_display);
 
-        //Get passed in playerList
-        playerList = new PlayerList((ArrayList<Player>)extras.get("playerList"));
+        //Set hole score and total score displays. Initialize to 0
+        playerHoleScoreDisp = (TextView)findViewById(R.id.play_game_hole_score_text);
+        playerCourseScoreDisp = (TextView)findViewById(R.id.play_game_total_score);
+        initializeHoleAndCourseScore();
 
         //Set length and par displays
         lengthDisplay = (TextView)findViewById(R.id.play_game_length_text);
         parDisplay = (TextView)findViewById(R.id.play_game_par_text);
 
         //Set initial hole, set initial SP. Set associated displays
-        currentHole = course.getHoleList().get(0);
+        currentHole = thisGame.getCourse().getHoleList().get(0);
         currentSP = currentHole.getStartingPoints().get(0);
         setCurrentHoleDisplay();
         setLengthAndPar();
 
-        //Set initial currentPlayer
-        nextPlayer();
+        //Get first holeScoreList
+        currentHSList = thisGame.getNextHoleScoreList(null, currentHole.getHoleNumber(), currentSP.getName());
 
         //Get spinner from layout
         teeSelectorSpinner = (Spinner) findViewById(R.id.play_game_tee_spinner);
         setSpinnerOptions(currentHole.getStartingPointNames());
         setTeeSpinnerFunction();
+
+        //Set initial currentPlayer
+        nextPlayer();
 
         //Set player next and previous buttons
         playerPlusButton = (TextView)findViewById(R.id.play_game_player_plus_button);
@@ -131,29 +139,63 @@ public class PlayGame extends AppCompatActivity
                 decrementHole();
             }
         });
+
+        //Set score plus and minus buttons
+        scorePlusButton = (TextView)findViewById(R.id.play_game_hole_score_add_button);
+        scorePlusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //When score increment button is clicked, increment players score, change display to reflect score
+                setPlayerHoleScoreDisp(Game.incrementPlayerScore(currentPlayer, currentHSList));
+                setPlayerCourseScoreDisp(thisGame.incrementPlayerCourseScore(currentPlayer));
+            }
+        });
+        scoreMinusButton = (TextView)findViewById(R.id.play_game_hole_score_minus_button);
+        scoreMinusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //When score decrement button is clicked, decrement players score
+                setPlayerHoleScoreDisp(Game.decrementPlayerScore(currentPlayer, currentHSList));
+                setPlayerCourseScoreDisp(thisGame.decrementPlayerCourseScore(currentPlayer));
+            }
+        });
     }
 
     private void incrementHole()
     {
-        //Change current Hole
-        currentHole = course.getNextHole(currentHole);
-        //Change current hole display
-        setCurrentHoleDisplay();
-        setSpinnerOptions(currentHole.getStartingPointNames());
-        setTeeSpinnerFunction();
+        //Check if current hole is last hole, if it is, end game
+        if(thisGame.isLastHoleInCourse(currentHole))
+        {
+            finishGame();
+        }
+        else {
 
-        //Set par and length
-        setLengthAndPar();
+            //Change current Hole
+            currentHole = thisGame.getCourse().getNextHole(currentHole);
+            //Change current hole display
+            setCurrentHoleDisplay();
+            setSpinnerOptions(currentHole.getStartingPointNames());
+            setTeeSpinnerFunction();
 
-        //Set player Stats
-        setTeeTextDisplays();
-        setCourseTextDisplays();
+            //Set par and length
+            setLengthAndPar();
+
+            //Set player Stats
+            setTeeTextDisplays();
+            setCourseTextDisplays();
+
+            //Get next list of hole scores, set holescore display
+            currentHSList = thisGame.getNextHoleScoreList(currentHSList, currentHole.getHoleNumber(), currentSP.getName());
+            setPlayerHoleScoreDisp(Game.getPlayerHoleScore(currentPlayer, currentHSList));
+
+            setPlayerCourseScoreDisp(thisGame.getPlayerCourseScore(currentPlayer));
+        }
     }
 
     private void decrementHole()
     {
         //Change current hole to previous hole
-        currentHole = course.getPreviousHole(currentHole);
+        currentHole = thisGame.getCourse().getPreviousHole(currentHole);
 
         //Change display
         setCurrentHoleDisplay();
@@ -166,6 +208,10 @@ public class PlayGame extends AppCompatActivity
         //Set player Stats
         setTeeTextDisplays();
         setCourseTextDisplays();
+
+        currentHSList = thisGame.getPreviousHoleScoreList(currentHSList);
+        setPlayerHoleScoreDisp(Game.getPlayerHoleScore(currentPlayer, currentHSList));
+        setPlayerCourseScoreDisp(thisGame.getPlayerCourseScore(currentPlayer));
     }
 
     //Sets currentPlayer to the next player in the player list, and
@@ -175,11 +221,11 @@ public class PlayGame extends AppCompatActivity
         //If no player is set, get first player. Else, get next player
         if(currentPlayer == null)
         {
-            currentPlayer = playerList.getFirstPlayer();
+            currentPlayer = thisGame.getPlayerList().getFirstPlayer();
         }
         else
         {
-            currentPlayer = playerList.getNextPlayer(currentPlayer);
+            currentPlayer = thisGame.getPlayerList().getNextPlayer(currentPlayer);
         }
 
         //Set name in display
@@ -188,12 +234,16 @@ public class PlayGame extends AppCompatActivity
         //Need to set stats
         setTeeTextDisplays();
         setCourseTextDisplays();
+
+        //Set hole score display
+        setPlayerHoleScoreDisp(Game.getPlayerHoleScore(currentPlayer, currentHSList));
+        setPlayerCourseScoreDisp(thisGame.getPlayerCourseScore(currentPlayer));
     }
 
     //Sets current player to be previous player
     private void previousPlayer()
     {
-        currentPlayer = playerList.getPreviousPlayer(currentPlayer);
+        currentPlayer = thisGame.getPlayerList().getPreviousPlayer(currentPlayer);
 
         //Set name in display
         playerNameDisplay.setText(getPlayerNameForDisplay(currentPlayer));
@@ -201,6 +251,10 @@ public class PlayGame extends AppCompatActivity
         //Need to set stats
         setTeeTextDisplays();
         setCourseTextDisplays();
+
+        //Get hole score display
+        setPlayerHoleScoreDisp(Game.getPlayerHoleScore(currentPlayer, currentHSList));
+        setPlayerCourseScoreDisp(thisGame.getPlayerCourseScore(currentPlayer));
     }
 
     //Returns player name formated for display
@@ -217,8 +271,7 @@ public class PlayGame extends AppCompatActivity
     }
 
     //Sets length and par
-    private void setLengthAndPar()
-    {
+    private void setLengthAndPar() {
         lengthDisplay.setText(Integer.toString(currentSP.getLength()) + "ft");
         parDisplay.setText(Integer.toString(currentHole.getPar()) + "st");
     }
@@ -231,8 +284,8 @@ public class PlayGame extends AppCompatActivity
     //Sets tee average and best displays to reflect current player and tee
     private void setTeeTextDisplays()
     {
-        int teeAvg = DB.getStartingPointAvg(course.getId(), currentHole.getHoleNumber(), currentSP.getName(), currentPlayer.getId(), qdb);
-        int teeBest = DB.getStartingPointBest(course.getId(), currentHole.getHoleNumber(), currentSP.getName(), currentPlayer.getId(), qdb);
+        int teeAvg = DB.getStartingPointAvg(thisGame.getCourse().getId(), currentHole.getHoleNumber(), currentSP.getName(), currentPlayer.getId(), qdb);
+        int teeBest = DB.getStartingPointBest(thisGame.getCourse().getId(), currentHole.getHoleNumber(), currentSP.getName(), currentPlayer.getId(), qdb);
 
         String avg, best;
 
@@ -329,7 +382,7 @@ public class PlayGame extends AppCompatActivity
 
     private void setPlayerCourseAvgDisplay(String hspName)
     {
-        int courseAverage = DB.getCourseAverageForTee(course.getId(), currentPlayer.getId(), hspName, qdb);
+        int courseAverage = DB.getCourseAverageForTee(thisGame.getCourse().getId(), currentPlayer.getId(), hspName, qdb);
 
         if(courseAverage == DB.NO_RESULTS)
         {
@@ -342,9 +395,8 @@ public class PlayGame extends AppCompatActivity
         }
     }
 
-    private void setPlayerCourseBestDisplay(String hspName)
-    {
-        int courseBest = DB.getCourseBestForTee(course.getId(), currentPlayer.getId(), hspName, qdb);
+    private void setPlayerCourseBestDisplay(String hspName) {
+        int courseBest = DB.getCourseBestForTee(thisGame.getCourse().getId(), currentPlayer.getId(), hspName, qdb);
 
         if(courseBest == DB.NO_RESULTS)
         {
@@ -355,5 +407,52 @@ public class PlayGame extends AppCompatActivity
             String displayString = formatStringForScoreDisplay(courseBest);
             playerCourBestDisplay.setText(displayString);
         }
+    }
+
+    //Sets hole score display to equal score
+    private void setPlayerHoleScoreDisp(int score)
+    {
+        String displayString = "";
+
+        if(score >= 0)
+        {
+            displayString += "+";
+        }
+
+        displayString += Integer.toString(score);
+
+        playerHoleScoreDisp.setText(displayString);
+    }
+
+    private void initializeHoleAndCourseScore()
+    {
+        playerHoleScoreDisp.setText("+0");
+        playerCourseScoreDisp.setText("+0");
+    }
+
+    private void setPlayerCourseScoreDisp(int score)
+    {
+        String displayString = "";
+
+        if(score >= 0)
+        {
+            displayString += "+";
+        }
+
+        displayString += Integer.toString(score);
+
+        playerCourseScoreDisp.setText(displayString);
+    }
+
+    //Save all game stats to DB, go to main screen
+    private void finishGame()
+    {
+        DB.saveGameData(qdb, thisGame);
+
+        List<CourseScore> gameList = DB.getCourseScoresForGame(thisGame.getID(), qdb);
+
+        int i = 0;
+        Intent startMainScreen = new Intent(this, HomeScreen.class);
+        startActivity(startMainScreen);
     }
 }

@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -14,7 +16,7 @@ import java.util.List;
 public class DB extends SQLiteOpenHelper
 {
     final static int DB_VERSION = 1;                //Holds db version
-    final static String DB_NAME = "mydb.s3db";      //db name
+    static String DB_NAME = "mydb.s3db";      //db name
     Context context;
 
     final static int NO_RESULTS = -999;                    //Used for when a table has no results
@@ -25,9 +27,20 @@ public class DB extends SQLiteOpenHelper
     public DB(Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
-
         //Store context
         this.context = context;
+    }
+
+    public DB(Context context, String name)
+    {
+        super(context, name, null, DB_VERSION);
+        DB_NAME = name;
+        //Store context
+        this.context = context;
+    }
+
+    public static String getDbName() {
+        return DB_NAME;
     }
 
     /*
@@ -63,6 +76,9 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         //Create courseScores table
         db.execSQL("CREATE TABLE courseScores ( game_id INTEGER, course_id INTEGER, player_id INTEGER, tee_name TEXT, score INTEGER, FOREIGN KEY(game_id) REFERENCES games(_id), FOREIGN KEY(course_id) REFERENCES courses(_id), FOREIGN KEY (player_id) REFERENCES players(_id), FOREIGN KEY (tee_name) REFERENCES startingPoints(name), PRIMARY KEY (game_id, course_id, player_id, tee_name))");
+
+        //Create played_in table
+        db.execSQL("CREATE TABLE playedIN(game_id INTEGER, player_id INTEGER, FOREIGN KEY (game_id) REFERENCES games(_id), FOREIGN KEY (player_id) REFERENCES players(_id), PRIMARY KEY (game_id, player_id))");
     }
 
     @Override
@@ -115,7 +131,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
     public static void addGames(SQLiteDatabase db)
     {
-        db.execSQL("INSERT INTO games (course_id, datePlayed) values (1, '2008/08/02');");
+        db.execSQL("INSERT INTO games (course_id, datePlayed) values (2, '2008/08/02');");
     }
 
     public static void addStartingPointScores(SQLiteDatabase db)
@@ -144,9 +160,104 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return false;
     }
 
+    public static void saveGameData(SQLiteDatabase db, Game game)
+    {
+        insertGameIntoDatabase(db, game);
+        insertCourseScoresIntoDatabase(db, game);
+        insertHoleScoresIntoDatabase(db, game);
+    }
+
+    /*============================================================================================================
+     * !!! THE FOLLOWING FUNCTIONS ARE FOR GAMES
+     */
+
+    public static List<Game> getAllGames(SQLiteDatabase db)
+    {
+        List<Game> gameList = new ArrayList<Game>();
+
+        Cursor gameCursor = db.rawQuery("SELECT * FROM GAMES;", null);
+
+        gameCursor.moveToFirst();
+
+        PlayerList pl;
+        Game temp;
+        while(gameCursor.getPosition() < gameCursor.getCount())
+        {
+            //Set player list with players for game
+            pl = new PlayerList();
+            pl.setWithList(getPlayersInGame(gameCursor.getInt(0), db));
+
+            //Add new game to list
+            temp = new Game(getCourseByID(gameCursor.getInt(1), db), pl);
+            temp.setID(gameCursor.getInt(0));
+            gameList.add(temp);
+            gameCursor.moveToNext();
+        }
+
+        return gameList;
+    }
+
+    public static void insertGameIntoDatabase(SQLiteDatabase db, Game game)
+    {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()).substring(0, 8);
+        String finalTimeStamp = timeStamp.substring(0,4) + "/" + timeStamp.substring(4, 6) + "/" + timeStamp.substring(6, 8);
+        int courseId = game.getCourse().getId();
+
+        //Set game ID because it does not yet have one
+        game.setID(getNextGameId(db));
+
+        db.execSQL("INSERT INTO games (course_id, datePlayed) values (" + Integer.toString(courseId) + ", " + finalTimeStamp + ");");
+        insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
+    }
+
+    //Gets ID that will be given to next game inserted into DB
+    private static int getNextGameId(SQLiteDatabase db)
+    {
+        Cursor gameCursor = db.rawQuery("SELECT * FROM GAMES", null);
+        gameCursor.moveToLast();
+        return gameCursor.getInt(0) + 1;
+    }
+
     /*============================================================================================================
      * !!! THE FOLLOWING FUNCTIONS ARE FOR COURSES
      */
+
+    //Deletes all records from course table
+    public static void deleteAllFromCourse(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM COURSES");
+    }
+
+    //Returns course with _id equal to id;
+    private static Course getCourseByID(int id, SQLiteDatabase db)
+    {
+        Cursor courseCursor = db.rawQuery("SELECT * FROM COURSES WHERE _id = " + Integer.toString(id)+";", null);
+
+        courseCursor.moveToFirst();
+
+        return new Course(courseCursor.getInt(0), courseCursor.getString(1), courseCursor.getString(3), courseCursor.getString(2), getCourseHoles(courseCursor.getInt(0), db));
+    }
+
+    //Inserts the course scores from game g into the database
+    private static void insertCourseScoresIntoDatabase(SQLiteDatabase db, Game g)
+    {
+        List<CourseScore> csl = g.getCourseScoreList();
+
+        String gameID = Integer.toString(g.getID());
+        String courseID = Integer.toString(g.getCourse().getId());
+        String playerID, teeName, score;
+
+
+        for(CourseScore cs: csl)
+        {
+            playerID = Integer.toString(cs.getPlayer().getId());
+            teeName = cs.getGameTee();
+            score = Integer.toString(cs.getScore());
+
+            db.execSQL("INSERT INTO courseScores VALUES (" + gameID + ", " + courseID + ", " + playerID + ", '" + teeName + "', " + score +  ");");
+            int i = 0;
+        }
+    }
 
     /*
      *Returns a list of all courses stored in the database
@@ -210,6 +321,24 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         bestCursor.moveToFirst();
 
         return bestCursor.getInt(0);
+    }
+
+    //Returns all course scores for a specific game
+    public static List<CourseScore> getCourseScoresForGame(int gameID, SQLiteDatabase db)
+    {
+        List<CourseScore> csList = new ArrayList<CourseScore>();
+
+        Cursor csCursor = db.rawQuery("SELECT * FROM COURSESCORES WHERE game_id = " + Integer.toString(gameID)+";" ,null);
+
+        csCursor.moveToFirst();
+
+        while(csCursor.getPosition() < csCursor.getCount())
+        {
+            csList.add(new CourseScore(getPlayerById(csCursor.getInt(2), db), getCourseByID(csCursor.getInt(1), db)));
+            csCursor.moveToNext();
+        }
+
+        return csList;
     }
 
     /*==================================================================================================================
@@ -297,9 +426,38 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return (int)avgScore;
     }
 
+    //Inserts each of the holescores from game into the database
+    private static void insertHoleScoresIntoDatabase(SQLiteDatabase db, Game game)
+    {
+        List<List<HoleScore>> hsLL = game.getHSLList();
+
+        String gameID = Integer.toString(game.getID());
+        String courseID = Integer.toString(game.getCourse().getId());
+        String holeNumber, startingPointName, playerID, score;
+
+        for(List<HoleScore> HSL: hsLL)
+        {
+            for(HoleScore hs: HSL)
+            {
+                holeNumber = Integer.toString(hs.getHoleNumber());
+                startingPointName = hs.getHoleName();
+                playerID = Integer.toString(hs.getPlayer().getId());
+                score = Integer.toString(hs.getScore());
+
+                db.execSQL("INSERT INTO startingpointscores VALUES (" + gameID + ", " + courseID + ", " + holeNumber + ", '" + startingPointName + "', " + playerID + ", " + score + ");");
+            }
+        }
+    }
+
     /*==================================================================================================================
      * !!!! THE FOLLOWING FUNCTIONS ARE FOR PLAYERS
      */
+
+    //Deletes all players from DB
+    public static void deleteAllPlayers(SQLiteDatabase db)
+    {
+        db.execSQL("DELETE FROM PLAYERS;");
+    }
 
     /*
      * Get all players sorted by most times played to least
@@ -325,6 +483,16 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         //Return filled list
         return playerList;
+    }
+
+    //Gets a specific player by id
+    public static Player getPlayerById(int id, SQLiteDatabase db)
+    {
+        Cursor playerCursor = db.rawQuery("SELECT * FROM PLAYERS WHERE _id = " + Integer.toString(id) + ";", null);
+
+        playerCursor.moveToFirst();
+
+        return new Player(playerCursor.getInt(0), playerCursor.getString(1), playerCursor.getString(2), playerCursor.getInt(3));
     }
 
     /*=================================================================================================
@@ -361,4 +529,33 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return spList;
     }
 
+        /*==================================================================================================================
+     * !!!! THE FOLLOWING FUNCTIONS ARE FOR PLAYED_IN
+     */
+
+        //Returns a list of players that played in a specific game
+        private static List<Player> getPlayersInGame(int gameID, SQLiteDatabase db)
+        {
+            List<Player> pList = new ArrayList<Player>();
+            Cursor playerCursor = db.rawQuery("SELECT players._id, players.firstName, players.lastName, players.timesPlayed FROM playedin, players where playedin.game_id = " + Integer.toString(gameID) + " AND playedin.player_id = players._id;", null);
+
+            playerCursor.moveToFirst();
+
+            while(playerCursor.getPosition() < playerCursor.getCount())
+            {
+                pList.add(new Player(playerCursor.getInt(0), playerCursor.getString(1), playerCursor.getString(2), playerCursor.getInt(3)));
+                playerCursor.moveToNext();
+            }
+
+            return pList;
+        }
+
+        //Inserts a list of players into the playedin table along with a corresponding game id
+        private static void insertPlayersIntoPlayedIn(List<Player> pList, int gameId, SQLiteDatabase db)
+        {
+            for(int i = 0; i < pList.size(); i++)
+            {
+                db.execSQL("INSERT INTO playedin values (" + Integer.toString(gameId) + ", " + pList.get(i).getId() + ");");
+            }
+        }
 }

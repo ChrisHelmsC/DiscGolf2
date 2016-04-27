@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ApplicationSettings" />
-        <activity android:name=".PlayGame"></activity>
+        <activity android:name=".PlayGame" />
+        <activity android:name=".TestingActivity"></activity>
     </application>
 
 </manifest>

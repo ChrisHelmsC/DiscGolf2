@@ -34,7 +34,7 @@ public class HomeScreen extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent settingsIntent = new Intent(v.getContext(), ApplicationSettings.class);
+                Intent settingsIntent = new Intent(v.getContext(), TestingActivity.class);
                 startActivity(settingsIntent);
             }
         });

@@ -213,8 +213,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="-10dp"
-                android:text="+1"
+                android:text="+0"
                 android:textSize="100sp"
+                android:fontFamily="monospace"
                 />
 
             <!--<TextView
@@ -232,6 +233,7 @@
                 android:layout_height="wrap_content"
                 android:text="+5"
                 android:textSize="100sp"
+                android:fontFamily="monospace"
                 android:layout_below="@id/play_game_hole_score_text"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="18dp"
