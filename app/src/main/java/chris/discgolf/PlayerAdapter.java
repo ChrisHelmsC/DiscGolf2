@@ -108,6 +108,11 @@ public class PlayerAdapter extends BaseAdapter
             }
         });
 
+        if(choosePlayers.playingPlayers.getPlayerList().contains(choosePlayers.playerList.getPlayerList().get(position)))
+        {
+            holder.checkBox.setChecked(true);
+        }
+
         return rowView;
     }
 

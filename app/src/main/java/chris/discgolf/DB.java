@@ -102,10 +102,18 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
      */
     public static void addCourses(SQLiteDatabase db)
     {
+        //db.execSQL("INSERT INTO courses (name, state, city) VALUES ()");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('ECU North Rec. Complex', 'NC', 'Greenville');");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('MedowBrook Park', 'NC', 'Greenville');");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Covenant Church', 'NC', 'Greenville');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', 'Select to Add a New Course', '');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Dorey Park', 'VA', 'Richmond');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Franklin Park', 'VA', 'Purcellville');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Buffalo Ridge Park', 'AZ', 'Phoenix');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('CottonWood Riverfront Park', 'AZ', 'Cottonwood');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Fountain Hills Park', 'AZ', 'Phoenix')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Abrams Park', 'WA', 'Ridgefield')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Beth Schmidt Park', 'NC', 'Elon')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', '', 'Select to Add a New Course');");
     }
 
     // Adds holes for testing purposes
@@ -285,7 +293,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     public static List<Course> getCourses(SQLiteDatabase db)
     {
         //Query DB for all courses
-        Cursor courseCursor = db.rawQuery("Select * from courses;", null);
+        Cursor courseCursor = db.rawQuery("Select * from courses order by state asc NULLS LAST;", null);
 
         //Move cursor to beginning of table
         courseCursor.moveToFirst();
@@ -430,6 +438,15 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         playerCursor.moveToFirst();
 
         return new Player(playerCursor.getInt(0), playerCursor.getString(1), playerCursor.getString(2), playerCursor.getInt(3));
+    }
+
+    public static void insertPlayerIntoDb(Player p, SQLiteDatabase db)
+    {
+        db.execSQL("INSERT INTO PLAYERS (firstName, lastName, timesPlayed) VALUES ('" + p.getFirstName() + "', '" + p.getLastName() + "', " + Integer.toString(0) + ");");
+
+        Cursor c = db.rawQuery("SELECT * FROM PLAYERS", null);
+        c.moveToLast();
+        p.setId(c.getInt(0));
     }
 
     /*=================================================================================================

@@ -52,6 +52,16 @@ public class TestingClass
         list.add(new testGetTeesForHole());
         list.add(new holeCanGetStartingPointNames());
         list.add(new holeCanGetSpByName());
+        list.add(new testCourseClassCanGextNextAndPrevious());
+        list.add(new testCourseScoreCanIncAndDec());
+        list.add(new testPlayerListClassCanGetNames());
+        list.add(new testPlayerListCanGetFirstPlayer());
+        list.add(new testPlayerListCanGetNextAndPrev());
+        list.add(new testCourseListCanGetNames());
+        list.add(new testCourstListCanAddCourseToList());
+        list.add(new testCourseListCanGetCourseArray());
+        list.add(new testDatabaseCanClearAllTables());
+
         return list;
     }
 
@@ -793,4 +803,267 @@ public class TestingClass
 
 }
 
+    public class testCourseClassCanGextNextAndPrevious extends TestingClass
+    {
+        public testCourseClassCanGextNextAndPrevious ()
+        {
+            req_id = "70";
+            testID = 23;
+            description = "The Course class contains methods for getting the next hole in its list by passing in a hole object, and getting the previous hole in the list by passing in a hole object.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        List<Hole> holeList = new ArrayList<Hole>();
+
+        Hole a = new Hole(1, 3, null);
+        Hole b = new Hole(2, 3, null);
+
+        holeList.add(a);
+        holeList.add(b);
+
+        Course c = new Course("Course", "City", "State");
+        c.setHoleList(holeList);
+
+        if(c.getNextHole(a) == b)
+        {
+            if(c.getPreviousHole(b) == a)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+}
+
+    public class testCourseScoreCanIncAndDec extends TestingClass
+    {
+        public testCourseScoreCanIncAndDec()
+        {
+            req_id = "73";
+            testID = 24;
+            description = "The CourseScore class has methods for incrementing and decrementing its score.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addPlayers(db);
+        DB.addCourses(db);
+        CourseScore c = new CourseScore(DB.getPlayerById(1, db), DB.getCourseByID(1, db));
+        c.setScore(0);
+
+        if(c.decrementScore() == -1)
+        {
+            if(c.incrementScore() == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+
+    public class testPlayerListClassCanGetNames extends TestingClass
+    {
+        public testPlayerListClassCanGetNames()
+        {
+            req_id = "79";
+            testID = 25;
+            description = "The PlayerList class has a method for getting a list of strings representing the names of the players in its list.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addPlayers(db);
+
+        PlayerList p = new PlayerList();
+        p.setWithList(DB.getAllPlayersList(db));
+
+        List<String> names = p.getPlayerNames();
+
+        if(names.size() == 4)
+        {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+    public class testPlayerListCanGetFirstPlayer extends TestingClass
+    {
+        public testPlayerListCanGetFirstPlayer ()
+        {
+            req_id = "80";
+            testID = 26;
+            description = "The PlayerList class has a method for getting the first player object in its list.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addPlayers(db);
+
+        PlayerList p = new PlayerList();
+        p.setWithList(DB.getAllPlayersList(db));
+
+        if(p.getFirstPlayer().getFirstName().equals("Chris"))
+        {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+    public class testPlayerListCanGetNextAndPrev extends TestingClass
+    {
+        public testPlayerListCanGetNextAndPrev ()
+        {
+            req_id = "81";
+            testID = 27;
+            description = "The PlayerList class has methods for getting the next and previous players in its list based on a passed in player.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addPlayers(db);
+        Player a = DB.getPlayerById(1, db);
+        Player b = DB.getPlayerById(2, db);
+        List<Player> pList = new ArrayList<Player>();
+        pList.add(a);
+        pList.add(b);
+        PlayerList p = new PlayerList();
+        p.setWithList(pList);
+
+        if(p.getNextPlayer(a) == b)
+        {
+            if(p.getPreviousPlayer(b) == a)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+
+    public class testCourseListCanGetNames extends TestingClass
+    {
+        public testCourseListCanGetNames ()
+        {
+            req_id = "83";
+            testID = 28;
+            description = "The CourseList contains a method for getting an array of strings representing the names of the courses in its list.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addCourses(db);
+
+        CourseList c = new CourseList();
+        c.setCourseList(DB.getCourses(db));
+
+        String[] cNames = c.getCourseNames();
+
+        if(cNames.length == 4) return true;
+        return false;
+    }
+
+}
+
+    public class testCourstListCanAddCourseToList extends TestingClass
+    {
+        public testCourstListCanAddCourseToList ()
+        {
+            req_id = "84";
+            testID = 29;
+            description = "The CourseList contains a method for adding a Course object to its list.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        CourseList c = new CourseList();
+        c.setCourseList(new ArrayList<Course>());
+        int original = c.getCourseList().size();
+
+        c.addCourse(new Course("Course", "Elon", "NC"));
+        int second = c.getCourseList().size();
+
+        if(second - 1 == original)
+        {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+    public class testCourseListCanGetCourseArray  extends TestingClass
+    {
+        public testCourseListCanGetCourseArray()
+        {
+            req_id = "85";
+            testID = 30;
+            description = "The CourseList contains a method for getting an array of Course objects representing all the Courses in its list.";
+            passed = false;
+        }
+
+        public boolean runTest(SQLiteDatabase db)
+        {
+            DB.addCourses(db);
+
+            CourseList c = new CourseList();
+            c.setCourseList(DB.getCourses(db));
+
+            Course[] courses = c.getCourseArray();
+
+            if(courses.length == 4)
+            {
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    public class testDatabaseCanClearAllTables extends TestingClass
+    {
+        public testDatabaseCanClearAllTables()
+        {
+            req_id = "103";
+            testID = 31;
+            description = "The Database class should contain a method for cleaning out all tables in DB.";
+            passed = false;
+        }
+
+    public boolean runTest(SQLiteDatabase db)
+    {
+        DB.addCourses(db);
+        DB.addHoles(db);
+        DB.addStartingPoints(db);
+        DB.addPlayers(db);
+        DB.addGames(db);
+        DB.addCourseScores(db);
+        DB.addStartingPointScores(db);
+
+        DB.cleanOutDB(db);
+
+        if(DB.dbIsEmpty(db))
+        {
+            return true;
+        }
+        return false;
+    }
+
+}
 }

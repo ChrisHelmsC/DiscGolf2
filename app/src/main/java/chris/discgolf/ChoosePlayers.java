@@ -1,19 +1,19 @@
 package chris.discgolf;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class ChoosePlayers extends AppCompatActivity
 {
@@ -82,10 +82,63 @@ public class ChoosePlayers extends AppCompatActivity
         startActivity(i);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.choose_players_menu, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        Toast.makeText(this, Integer.toString(item.getItemId()), Toast.LENGTH_SHORT).show();
+        if(item.getItemId() == R.id.choose_players_menu_add_new)
+        {
+            addNewPlayerPopup();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addNewPlayerPopup()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("New Player");
+        alert.setMessage("Enter Player Name");
+
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+
+        alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Add Player from name string
+                String[] split = input.getText().toString().split("\\s+");
+
+                if (split.length == 2)
+                {
+                    //Add player to DB, list
+                    Player p = new Player(split[0], split[1]);
+                    DB.insertPlayerIntoDb(p, qdb);
+                    playerList.getPlayerList().add(p);
+                    playingPlayers.getPlayerList().add(p);
+                    playerAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    Toast.makeText(getBaseContext(), "Name was entered incorrectly.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Do nothing
+            }
+        });
+
+        alert.show();
     }
 }

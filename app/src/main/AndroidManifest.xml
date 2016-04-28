@@ -33,7 +33,8 @@
         </activity>
         <activity android:name=".ApplicationSettings" />
         <activity android:name=".PlayGame" />
-        <activity android:name=".TestingActivity"></activity>
+        <activity android:name=".TestingActivity"
+            android:label="Settings"></activity>
     </application>
 
 </manifest>
