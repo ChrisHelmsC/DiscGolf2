@@ -61,6 +61,10 @@ public class TestingClass
         list.add(new testCourstListCanAddCourseToList());
         list.add(new testCourseListCanGetCourseArray());
         list.add(new testDatabaseCanClearAllTables());
+        list.add(new testNextAndPreviousHoleScoreLists());
+        list.add(new testIncrementAndDecrementPlayerCourseScore());
+        list.add(new testGetPlayerCourseScore());
+        list.add(new testCheckLastHoleInCourse());
 
         return list;
     }
@@ -1066,4 +1070,135 @@ public class TestingClass
     }
 
 }
+
+    public class testNextAndPreviousHoleScoreLists extends TestingClass
+    {
+        public testNextAndPreviousHoleScoreLists()
+        {
+            req_id = "110";
+            testID = 32;
+            description = "The Game class should have methods for getting the next and previos HoleScore List.";
+            passed = false;
+        }
+
+        public boolean runTest(SQLiteDatabase db)
+        {
+            List<HoleScore> a = new ArrayList<HoleScore>();
+            a.add(new HoleScore());
+
+            List<HoleScore> b = new ArrayList<HoleScore>();
+            b.add(new HoleScore());
+            b.add(new HoleScore());
+
+            List<List<HoleScore>> hs = new ArrayList<List<HoleScore>>();
+            hs.add(a);
+            hs.add(b);
+
+            DB.addCourses(db);
+            DB.addPlayers(db);
+
+            PlayerList p = new PlayerList();
+            p.setWithList(DB.getAllPlayersList(db));
+
+            Game g = new Game( DB.getCourses(db).get(1), p);
+
+            g.setHSLList(hs);
+
+            if(g.getNextHoleScoreList(a, 2, "white") == b)
+            {
+                if(g.getPreviousHoleScoreList(b) == a)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
+    public class testIncrementAndDecrementPlayerCourseScore extends TestingClass
+    {
+        public testIncrementAndDecrementPlayerCourseScore()
+        {
+            req_id = "113";
+            testID = 33;
+            description = "The Game class should have methods for incrementing and decrementing a player's course score.";
+            passed = false;
+        }
+
+        public boolean runTest(SQLiteDatabase db)
+        {
+            DB.addPlayers(db);
+            DB.addCourses(db);
+
+            PlayerList p = new PlayerList();
+            p.setWithList(DB.getAllPlayersList(db));
+            Game g = new Game(DB.getCourseByID(1, db), p );
+
+            if(g.incrementPlayerCourseScore(p.getFirstPlayer()) == 1)
+            {
+                if(g.decrementPlayerCourseScore(p.getFirstPlayer()) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
+    public class testGetPlayerCourseScore extends TestingClass
+    {
+        public testGetPlayerCourseScore ()
+        {
+            req_id = "112";
+            testID = 34;
+            description = "The Game class should have a method for getting a players score for the current hole.";
+            passed = false;
+        }
+
+        public boolean runTest(SQLiteDatabase db)
+        {
+            DB.addPlayers(db);
+            DB.addCourses(db);
+
+            PlayerList p = new PlayerList();
+            p.setWithList(DB.getAllPlayersList(db));
+            Game g = new Game(DB.getCourseByID(1, db), p );
+
+            if(g.getPlayerCourseScore(p.getFirstPlayer()) == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class testCheckLastHoleInCourse extends TestingClass {
+        public testCheckLastHoleInCourse()
+        {
+            req_id = "115";
+            testID = 35;
+            description = "The Game class should have a method for checking whether a hole is the last hole in a course.";
+            passed = false;
+        }
+
+        public boolean runTest(SQLiteDatabase db) {
+            DB.addPlayers(db);
+            DB.addCourses(db);
+            DB.addHoles(db);
+
+            PlayerList p = new PlayerList();
+            p.setWithList(DB.getAllPlayersList(db));
+            Game g = new Game(DB.getCourseByID(1, db), p);
+
+            int size = g.getCourse().getHoleList().size();
+            Hole h = g.getCourse().getHoleList().get(size - 1);
+
+            if (g.isLastHoleInCourse(h)) {
+                return true;
+            }
+            return false;
+        }
+    }
 }

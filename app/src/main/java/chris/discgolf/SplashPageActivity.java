@@ -21,7 +21,7 @@ public class SplashPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_page);
 
         //Use for deleting db contents
-        this.deleteDatabase("mydb.s3db");
+        //this.deleteDatabase("mydb.s3db");
 
         //Initialize DB
         DB database = new DB(this);
@@ -31,11 +31,11 @@ public class SplashPageActivity extends AppCompatActivity {
         if(DB.dbIsEmpty(qdb))
         {
             //Fill DB if empty
-            DB.addCourses(qdb);
-            DB.addHoles(qdb);
-            DB.addStartingPoints(qdb);
-            DB.addPlayers(qdb);
-            DB.addGames(qdb);
+            DB.addStockCourses(qdb);
+            DB.addStockHoles(qdb);
+            DB.addStockStartingPoints(qdb);
+            //DB.addPlayers(qdb);
+            //DB.addGames(qdb);
             //DB.addStartingPointScores(qdb);
             //DB.addCourseScores(qdb);
         }

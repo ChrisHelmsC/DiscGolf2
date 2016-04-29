@@ -69,17 +69,25 @@ public class ChoosePlayers extends AppCompatActivity
     //===========================================
     private void startGame()
     {
-        //Create intent to run game
-        Intent i = new Intent(this, PlayGame.class);
+        if(playingPlayers.getPlayerList().size() > 0)
+        {
+            //Create intent to run game
+            Intent i = new Intent(this, PlayGame.class);
 
-        //Add course to extras extras
-        i.putExtra("course", c);
+            //Add course to extras extras
+            i.putExtra("course", c);
 
-        //Add Players to extras
-        i.putExtra("playerList", playingPlayers.getPlayerList());
+            //Add Players to extras
+            i.putExtra("playerList", playingPlayers.getPlayerList());
 
-        //Start rungame activity
-        startActivity(i);
+            //Start rungame activity
+            startActivity(i);
+        }
+        else
+        {
+            Toast.makeText(this, "No players have been selected.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu)

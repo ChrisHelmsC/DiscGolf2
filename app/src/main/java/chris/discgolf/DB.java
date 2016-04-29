@@ -20,6 +20,7 @@ public class DB extends SQLiteOpenHelper
     Context context;
 
     final static int NO_RESULTS = -999;                    //Used for when a table has no results
+    final static int EighteenHoles = 18;
 
     /*Checks if db exists. IF it does not, calls oncreate.
     *If it does, checks for update, calls onUpgrade
@@ -106,13 +107,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('ECU North Rec. Complex', 'NC', 'Greenville');");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('MedowBrook Park', 'NC', 'Greenville');");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Covenant Church', 'NC', 'Greenville');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Dorey Park', 'VA', 'Richmond');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Franklin Park', 'VA', 'Purcellville');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Buffalo Ridge Park', 'AZ', 'Phoenix');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('CottonWood Riverfront Park', 'AZ', 'Cottonwood');");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Fountain Hills Park', 'AZ', 'Phoenix')");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Abrams Park', 'WA', 'Ridgefield')");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Beth Schmidt Park', 'NC', 'Elon')");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', '', 'Select to Add a New Course');");
     }
 
@@ -166,14 +160,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return false;
     }
 
-    public static void saveGameData(SQLiteDatabase db, Game game)
-    {
-        insertGameIntoDatabase(db, game);
-        insertCourseScoresIntoDatabase(db, game);
-        insertHoleScoresIntoDatabase(db, game);
-        insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
-    }
-
     //Cleans out all tables in DB
     public static void cleanOutDB(SQLiteDatabase db)
     {
@@ -190,6 +176,14 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     /*============================================================================================================
      * !!! THE FOLLOWING FUNCTIONS ARE FOR GAMES
      */
+
+    public static void saveGameData(SQLiteDatabase db, Game game)
+    {
+        insertGameIntoDatabase(db, game);
+        insertCourseScoresIntoDatabase(db, game);
+        insertHoleScoresIntoDatabase(db, game);
+        insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
+    }
 
     //Returns a game object associated with game_id
     public static Game getGameById(SQLiteDatabase db, int game_id)
@@ -293,7 +287,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     public static List<Course> getCourses(SQLiteDatabase db)
     {
         //Query DB for all courses
-        Cursor courseCursor = db.rawQuery("Select * from courses order by state asc NULLS LAST;", null);
+        Cursor courseCursor = db.rawQuery("Select * from courses order by state asc;", null);
 
         //Move cursor to beginning of table
         courseCursor.moveToFirst();
@@ -727,4 +721,53 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return csList;
     }
 
+    /*****************************************************************************
+     THE FOLLOWING IS FOR ACTUAL DATABASE INFORMATION
+     */
+    public static void addStockCourses(SQLiteDatabase db)
+    {
+        //db.execSQL("INSERT INTO courses (name, state, city) VALUES ()");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('ECU North Rec. Complex', 'NC', 'Greenville');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('MedowBrook Park', 'NC', 'Greenville');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Covenant Church', 'NC', 'Greenville');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Dorey Park', 'VA', 'Richmond');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Franklin Park', 'VA', 'Purcellville');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Buffalo Ridge Park', 'AZ', 'Phoenix');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('CottonWood Riverfront Park', 'AZ', 'Cottonwood');");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Fountain Hills Park', 'AZ', 'Phoenix')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Abrams Park', 'WA', 'Ridgefield')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Beth Schmidt Park', 'NC', 'Elon')");
+        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', '', 'Select to Add a New Course');");
+    }
+
+    public static void addStockHoles(SQLiteDatabase db)
+    {
+        //Add 18 holes to ECU North Rec
+        for(int i = 1; i <= 18; i++)
+        {
+            db.execSQL("INSERT into holes (course_id, number, par) values (1, " + Integer.toString(i) + ", 3);");
+        }
+
+        //Add 18 holes to Medowbrook
+        for(int i = 1; i <= 18; i++)
+        {
+            db.execSQL("INSERT into holes (course_id, number, par) values (2, " + Integer.toString(i) + ", 3);");
+        }
+
+        //Add 18 holes to Covenant Church
+        for(int i = 1; i <= 18; i++)
+        {
+            db.execSQL("INSERT into holes (course_id, number, par) values (3, " + Integer.toString(i) + ", 3);");
+        }
+    }
+
+    public static void addStockStartingPoints(SQLiteDatabase db)
+    {
+        //Insert MB starting points
+        for(int i = 0; i <= EighteenHoles; i++)
+        {
+            db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + Integer.toString(i) + " , 'White', 300);");
+            db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + Integer.toString(i) + " , 'Blue', 400);");
+        }
+    }
 }

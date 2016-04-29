@@ -1,14 +1,20 @@
 package chris.discgolf;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +165,23 @@ public class PlayGame extends AppCompatActivity
                 setPlayerCourseScoreDisp(thisGame.decrementPlayerCourseScore(currentPlayer));
             }
         });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.play_game_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == R.id.play_game_menu_end_game)
+        {
+            checkEndGameAlert();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void incrementHole()
@@ -454,5 +477,29 @@ public class PlayGame extends AppCompatActivity
         int i = 0;
         Intent startMainScreen = new Intent(this, HomeScreen.class);
         startActivity(startMainScreen);
+    }
+
+    private void checkEndGameAlert()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("End Game");
+        alert.setMessage("Are you sure you want to end the current game?");
+
+        alert.setPositiveButton("End Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishGame();
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Do nothing
+            }
+        });
+
+        alert.show();
     }
 }
