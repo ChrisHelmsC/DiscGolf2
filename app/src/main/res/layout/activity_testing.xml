@@ -7,6 +7,12 @@
     tools:context="chris.discgolf.TestingActivity">
 
     <Button
+        android:id="@+id/testing_activity_reset_db_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/test_activity_reset_stock_button"/>
+
+    <Button
         android:id="@+id/test_activity_test_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -32,9 +32,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ApplicationSettings" />
-        <activity android:name=".PlayGame" />
-        <activity android:name=".TestingActivity"
-            android:label="Settings"></activity>
+        <activity
+            android:name=".PlayGame"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TestingActivity"
+            android:label="Settings" />
+        <activity android:name=".GameHistoryActivity"
+            android:label="History"></activity>
     </application>
 
 </manifest>

@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Chris on 4/27/2016.
- */
 public class TestingClass
 {
     String req_id;
@@ -1184,7 +1181,7 @@ public class TestingClass
         }
 
         public boolean runTest(SQLiteDatabase db) {
-            DB.addPlayers(db);
+            DB.addPlayers(db); //Add everything needed for game
             DB.addCourses(db);
             DB.addHoles(db);
 
@@ -1192,9 +1189,11 @@ public class TestingClass
             p.setWithList(DB.getAllPlayersList(db));
             Game g = new Game(DB.getCourseByID(1, db), p);
 
+            //Check number of holes in course, get last hole
             int size = g.getCourse().getHoleList().size();
             Hole h = g.getCourse().getHoleList().get(size - 1);
 
+            //Pas last hole in to method, check if it returns true
             if (g.isLastHoleInCourse(h)) {
                 return true;
             }

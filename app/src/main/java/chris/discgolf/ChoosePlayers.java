@@ -1,9 +1,11 @@
 package chris.discgolf;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 public class ChoosePlayers extends AppCompatActivity
 {
+    Context context;                                    //Activity Context
     private Button confirm;                             //Buttons for adding, subtracting players, confirming list
     private PlayerAdapter playerAdapter;                //Adapter for player List
     PlayerList playerList;                              //List of all players
@@ -30,23 +33,23 @@ public class ChoosePlayers extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_players);
+        context = this;
 
         //Init Database
         DB db = new DB(this);
         qdb = db.getReadableDatabase();
-
-        //Create playerlist from DB, create empying playingPlayers list
-        playerList = new PlayerList();
-        playerList.setWithList(DB.getAllPlayersList(qdb));
-        playingPlayers = new PlayerList();
 
         //Get passed in course
         Bundle extras  = getIntent().getExtras();
         c = (Course) extras.getParcelable("course");
 
         //Initiliaze player adapter and listview
+        playerList = new PlayerList();
         playerAdapter = new PlayerAdapter(this);
         playersListView = (ListView) findViewById(R.id.number_players_list_view);
+
+        //Get players list, set adapter
+        new GetAllPlayersFromDB().execute();
         playersListView.setAdapter(playerAdapter);
 
         //Set confirm button to launch game activity
@@ -148,5 +151,24 @@ public class ChoosePlayers extends AppCompatActivity
         });
 
         alert.show();
+    }
+
+    //Gets list of all players from db
+    private class GetAllPlayersFromDB extends AsyncTask<Void, Void, Void>
+    {
+        protected Void doInBackground(Void... params)
+        {
+            //Create playerlist from DB, create empty playingPlayers list
+            playerList.setWithList(DB.getAllPlayersList(qdb));
+            playingPlayers = new PlayerList();
+
+            return null;
+        }
+
+        protected void onPostExecute(Void v)
+        {
+            playerAdapter.setPlayerList(playerList);
+            playerAdapter.notifyDataSetChanged();
+        }
     }
 }

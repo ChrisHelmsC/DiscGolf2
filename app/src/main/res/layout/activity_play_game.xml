@@ -343,7 +343,7 @@
                 android:layout_alignRight="@+id/play_game_player_name"
                 android:rotation="-90"
                 android:layout_marginTop="7dp"
-                android:layout_marginRight="-44dp"
+                android:layout_marginRight="-40dp"
                 android:layout_below="@+id/play_game_hole_score_button_text"
                 />
 

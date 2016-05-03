@@ -9,7 +9,7 @@ import android.widget.TextView;
 public class HomeScreen extends AppCompatActivity
 {
     //Buttons for playing game, game history, my discs
-    TextView playButton, myGamesButton, settingsButton;
+    TextView playButton, historyButton, settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,6 +24,16 @@ public class HomeScreen extends AppCompatActivity
             public void onClick(View v) {
                 Intent playIntent = new Intent(v.getContext(), ChooseCourse.class);
                 startActivity(playIntent);
+            }
+        });
+
+        //Set history button to launch GameHistoryActivity
+        historyButton = (TextView) findViewById(R.id.my_games_button);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent historyIntent = new Intent(v.getContext(), GameHistoryActivity.class);
+                startActivity(historyIntent);
             }
         });
 

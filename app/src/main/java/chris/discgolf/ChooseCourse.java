@@ -1,7 +1,9 @@
 package chris.discgolf;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /*
 *   4/3/2016: Removed display of player statistics from course screen based on changes in course and player classes
@@ -26,6 +29,7 @@ import java.util.Iterator;
 
 public class ChooseCourse extends AppCompatActivity {
 
+    private Context context;                            //Activity context
     private ListView LV;                                //Course listview
     private CourseAdapter CA;                           //Adapter for listview
     private Course clickedCourse;                       //Course that is currently selected by user
@@ -38,19 +42,14 @@ public class ChooseCourse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_course);
+        context = this;
 
-        //Init DB as readable
-        DB database = new DB(this);
-        qdb = database.getReadableDatabase();
-
-        //Add Courses to list from DB
-        courseList = new CourseList();
-        courseList.setCourseList(DB.getCourses(qdb));
-
-        //Initiliaze listview and adapter using courseList
+        //Initiliaze listview
         LV = (ListView) findViewById(R.id.play_list_view);
+
+        //Get courses in seperate thread
         CA = new CourseAdapter(this, courseList);
-        LV.setAdapter(CA);
+        new GetCoursesFromDatabase().execute();
 
         //Set Button
         playGameButton = (Button) findViewById(R.id.play__game_button);
@@ -142,6 +141,29 @@ public class ChooseCourse extends AppCompatActivity {
             IT.putExtra("course", c);
             IT.putParcelableArrayListExtra("holes", (ArrayList)c.getHoleList());
             startActivity(IT);
+        }
+    }
+
+    private class GetCoursesFromDatabase extends AsyncTask<Void, Void, CourseList>
+    {
+        //Get courses from DB as CourseList
+        protected CourseList doInBackground(Void... params)
+        {
+            //Init DB as readable
+            DB database = new DB(context);
+            qdb = database.getReadableDatabase();
+
+            //Add Courses to list from DB
+            courseList = new CourseList();
+            courseList.setCourseList(DB.getCourses(qdb));
+            return courseList;
+        }
+
+        protected void onPostExecute(CourseList result)
+        {
+            CA.setCourseList(result);
+            CA.notifyDataSetChanged();
+            LV.setAdapter(CA);
         }
     }
 }

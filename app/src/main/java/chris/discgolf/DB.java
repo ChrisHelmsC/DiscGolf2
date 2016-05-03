@@ -15,11 +15,11 @@ import java.util.List;
  */
 public class DB extends SQLiteOpenHelper
 {
-    final static int DB_VERSION = 1;                //Holds db version
+    final static int DB_VERSION = 1;          //Holds db version
     static String DB_NAME = "mydb.s3db";      //db name
     Context context;
 
-    final static int NO_RESULTS = -999;                    //Used for when a table has no results
+    final static int NO_RESULTS = -999;       //Used for when a table has no results
     final static int EighteenHoles = 18;
 
     /*Checks if db exists. IF it does not, calls oncreate.
@@ -56,6 +56,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
     //Creates database tables.
     //REQ IDs: 28-35.
+    //Sets up db, creates all tables
     @Override
     public void onCreate(SQLiteDatabase db)
     {
@@ -89,7 +90,9 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
     }
 
-    //Adds players for testing purposes
+    /*========================================================================================
+                !!! THE FOLLOWING METHODS ARE USED FOR SEEDING THE DB FOR TESTING !!!
+     */
     public static void addPlayers(SQLiteDatabase qdb)
     {
         qdb.execSQL("INSERT INTO players (firstName, lastName, timesPlayed) VALUES ('Chris', 'Helms', 2);");
@@ -98,9 +101,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         qdb.execSQL("INSERT INTO players (firstName, lastName, timesPlayed) VALUES ('Zach', 'Gorsuch', 1);");
     }
 
-    /*
-    * Adds courses for testing purposes
-     */
     public static void addCourses(SQLiteDatabase db)
     {
         //db.execSQL("INSERT INTO courses (name, state, city) VALUES ()");
@@ -110,7 +110,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', '', 'Select to Add a New Course');");
     }
 
-    // Adds holes for testing purposes
     public static void addHoles(SQLiteDatabase db)
     {
         db.execSQL("INSERT into holes (course_id, number, par) values (1, 1, 3);");
@@ -177,6 +176,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
      * !!! THE FOLLOWING FUNCTIONS ARE FOR GAMES
      */
 
+    //Saves all the data associated with a game
     public static void saveGameData(SQLiteDatabase db, Game game)
     {
         insertGameIntoDatabase(db, game);
@@ -203,6 +203,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return g;
     }
 
+    //Gets a list of all games in the database
     public static List<Game> getAllGames(SQLiteDatabase db)
     {
         List<Game> gameList = new ArrayList<Game>();
@@ -229,6 +230,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return gameList;
     }
 
+    //Inserts a single game into the database
     public static void insertGameIntoDatabase(SQLiteDatabase db, Game game)
     {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()).substring(0, 8);
@@ -434,6 +436,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return new Player(playerCursor.getInt(0), playerCursor.getString(1), playerCursor.getString(2), playerCursor.getInt(3));
     }
 
+    //Inserts a single player into the database
     public static void insertPlayerIntoDb(Player p, SQLiteDatabase db)
     {
         db.execSQL("INSERT INTO PLAYERS (firstName, lastName, timesPlayed) VALUES ('" + p.getFirstName() + "', '" + p.getLastName() + "', " + Integer.toString(0) + ");");
@@ -531,11 +534,11 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
             }
         }
 
-    //Deletes all records from played in
-    public static void deleteAllFromPlayedIn(SQLiteDatabase db)
-    {
-        db.execSQL("DELETE FROM PLAYEDIN;");
-    }
+        //Deletes all records from played in
+        public static void deleteAllFromPlayedIn(SQLiteDatabase db)
+        {
+            db.execSQL("DELETE FROM PLAYEDIN;");
+        }
 
     /*==================================================================================================================
      * !!!! THE FOLLOWING FUNCTIONS ARE FOR STARTINGPOINTSCORES !!!!
@@ -763,11 +766,16 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
     public static void addStockStartingPoints(SQLiteDatabase db)
     {
-        //Insert MB starting points
-        for(int i = 0; i <= EighteenHoles; i++)
-        {
-            db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + Integer.toString(i) + " , 'White', 300);");
-            db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + Integer.toString(i) + " , 'Blue', 400);");
-        }
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 1 + " , 'White', 180);");
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 1 + " , 'Blue', 253);");
+
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 2 + " , 'White', 351);");
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 2 + " , 'Blue', 400);");
+
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 3 + " , 'White', 196);");
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 3 + " , 'Blue', 263);");
+
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 4 + " , 'White', 274);");
+        db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 4 + " , 'Blue', 295);");
     }
 }

@@ -1,9 +1,11 @@
 package chris.discgolf;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.channels.FileLockInterruptionException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +44,7 @@ import java.util.List;
 
 public class PlayGame extends AppCompatActivity
 {
+    Context context;                              //Activity context
     Game thisGame;                          //Current game information
     private List<HoleScore>currentHSList;   //Current list of hole scores
     private Player currentPlayer;           //Current player represented on screen
@@ -64,6 +74,7 @@ public class PlayGame extends AppCompatActivity
     private TextView scoreMinusButton;      //Decrement score
 
     private SQLiteDatabase qdb;             //Database
+    private PlayGame thisActivity;          //For finishing in async task
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -75,6 +86,8 @@ public class PlayGame extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setTitle(thisGame.getCourse().getCourseName());
         setContentView(R.layout.activity_play_game);
+        context = this;
+        thisActivity = this;
 
         //Init Database
         DB db = new DB(this);
@@ -470,13 +483,7 @@ public class PlayGame extends AppCompatActivity
     //Save all game stats to DB, go to main screen
     private void finishGame()
     {
-        DB.saveGameData(qdb, thisGame);
-
-        List<CourseScore> gameList = DB.getCourseScoresForGame(thisGame.getID(), qdb);
-
-        int i = 0;
-        Intent startMainScreen = new Intent(this, HomeScreen.class);
-        startActivity(startMainScreen);
+        new FinishSaveGame().execute();
     }
 
     private void checkEndGameAlert()
@@ -501,5 +508,98 @@ public class PlayGame extends AppCompatActivity
         });
 
         alert.show();
+    }
+
+    @Override
+     protected void onStop()
+    {
+    //Write game information to file
+    saveGame();
+    super.onStop();
+    }
+
+    protected void onStart()
+    {
+        // Check for game data, load if it exists
+        File inputFile = new File(this.getFilesDir(), Constants.GAME_SAVE_FILE);
+        if(inputFile.exists())
+        {
+            try
+            {
+                //Read in data
+                FileInputStream is = new FileInputStream(Constants.GAME_SAVE_FILE);
+                ObjectInputStream oIs = new ObjectInputStream(is);
+                try
+                {
+                    thisGame = (Game)oIs.readObject();
+                }
+                catch(ClassNotFoundException f)
+                {
+                    f.printStackTrace();
+                }
+
+                //delete file
+                inputFile.delete();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+
+        super.onStart();
+    }
+
+    //Saves game data to file
+    private void saveGame()
+    {
+        //Create file to save to, Create output stream, create object stream
+        File saveFile = new File(this.getFilesDir(), Constants.GAME_SAVE_FILE);
+        FileOutputStream outputStream;
+        ObjectOutputStream objectOutputStream;
+
+        try
+        {
+            //Open file stream and object stream, write game to file, close stream
+            outputStream = openFileOutput(Constants.GAME_SAVE_FILE, Context.MODE_PRIVATE);
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(thisGame);
+            objectOutputStream.close();
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private class FinishSaveGame extends AsyncTask<Void, Void, Void>
+    {
+        //Save Game in background
+        protected Void doInBackground(Void... params)
+        {
+            DB.saveGameData(qdb, thisGame);
+            return null;
+        }
+
+        protected void onPostExecute(Void v)
+        {
+            //Return to main screen
+            Intent startMainScreen = new Intent(context, HomeScreen.class);
+            startMainScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(startMainScreen);
+        }
+
+        protected void onPreExecute()
+        {
+            Toast.makeText(context, "Please wait while game is saved...", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Do not allow user to go backwards
     }
 }
