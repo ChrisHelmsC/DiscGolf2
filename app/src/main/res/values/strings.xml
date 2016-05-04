@@ -27,7 +27,12 @@
     <!--TestActivity-->
     <string name="test_activity_test_button">Run Tests</string>
     <string name="test_activity_test_button_testing">Testing</string>
-    <string name ="test_activity_reset_stock_button">Reset Stock Database</string>
+    <string name="test_activity_reset_stock_button">Reset Stock Database</string>
+
+    <!--Statistics-->
+    <string name="statistics_game_button">Games</string>
+    <string name="statistics_course_button">Courses</string>
+    <string name="statistics_player_button">Players</string>
 
 
 </resources>

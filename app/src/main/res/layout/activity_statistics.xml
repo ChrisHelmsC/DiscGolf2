@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".StatisticsActivity"
+    >
+
+    <TextView
+        android:id="@+id/statistics_games_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/statistics_game_button"
+        android:gravity="center"
+        android:textSize="55sp" />
+
+    <TextView
+        android:id="@+id/statistics_Courses_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/statistics_course_button"
+        android:gravity="center"
+        android:textSize="55sp" />
+
+    <TextView
+        android:id="@+id/statistics_Players_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/statistics_player_button"
+        android:gravity="center"
+        android:textSize="55sp" />
+
+</LinearLayout>

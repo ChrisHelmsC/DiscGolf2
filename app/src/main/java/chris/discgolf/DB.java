@@ -199,6 +199,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         g = new Game(DB.getCourseByID(cursor.getInt(1), db), pl);
         g.setID(game_id);
         g.setCourseScoreList(getCourseScoresForGame(game_id, db));
+        g.setDate(cursor.getString(2));
 
         return g;
     }
@@ -223,6 +224,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
             //Add new game to list
             temp = new Game(getCourseByID(gameCursor.getInt(1), db), pl);
             temp.setID(gameCursor.getInt(0));
+            temp.setDate(gameCursor.getString(2));
             gameList.add(temp);
             gameCursor.moveToNext();
         }
@@ -240,7 +242,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         //Set game ID because it does not yet have one
         game.setID(getNextGameId(db));
 
-        db.execSQL("INSERT INTO games (course_id, datePlayed) values (" + Integer.toString(courseId) + ", " + finalTimeStamp + ");");
+        db.execSQL("INSERT INTO games (course_id, datePlayed) values (" + Integer.toString(courseId) + ", '" + finalTimeStamp + "');");
     }
 
     //Gets ID that will be given to next game inserted into DB
@@ -777,5 +779,11 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 4 + " , 'White', 274);");
         db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (2," + 4 + " , 'Blue', 295);");
+
+        //Add courses to ECU North Rec
+        for(int i = 1; i <= 18; i++)
+        {
+            db.execSQL("INSERT into startingPoints (course_id, hole_number, name, length) values (1," + i + " , 'White', 300);");
+        }
     }
 }

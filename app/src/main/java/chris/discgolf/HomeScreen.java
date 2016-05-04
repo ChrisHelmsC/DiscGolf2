@@ -27,12 +27,12 @@ public class HomeScreen extends AppCompatActivity
             }
         });
 
-        //Set history button to launch GameHistoryActivity
+        //Set history button to launch StatisticsActivity
         historyButton = (TextView) findViewById(R.id.my_games_button);
         historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent historyIntent = new Intent(v.getContext(), GameHistoryActivity.class);
+                Intent historyIntent = new Intent(v.getContext(), StatisticsActivity.class);
                 startActivity(historyIntent);
             }
         });

@@ -514,7 +514,7 @@ public class PlayGame extends AppCompatActivity
      protected void onStop()
     {
     //Write game information to file
-    saveGame();
+    //saveGame();
     super.onStop();
     }
 

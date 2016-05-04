@@ -38,8 +38,11 @@
         <activity
             android:name=".TestingActivity"
             android:label="Settings" />
-        <activity android:name=".GameHistoryActivity"
-            android:label="History"></activity>
+        <activity
+            android:name=".StatisticsActivity"
+            android:label="History" />
+        <activity android:name=".GameHistoryActivity" />
+        <activity android:name=".SelectedGameStatisticsActivity"></activity>
     </application>
 
 </manifest>
