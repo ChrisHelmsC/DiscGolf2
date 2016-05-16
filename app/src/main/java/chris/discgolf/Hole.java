@@ -26,6 +26,13 @@ public class Hole implements Parcelable {
         this.startingPoints = hps;
     }
 
+    public Hole(int hn, int par)
+    {
+        this.holeNumber = hn;
+        this.par = par;
+        this.startingPoints = new ArrayList<HoleStartingPoint>();
+    }
+
     public List<HoleStartingPoint> getStartingPoints() {
         return startingPoints;
     }

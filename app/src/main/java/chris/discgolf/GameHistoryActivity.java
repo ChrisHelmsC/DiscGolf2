@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -38,6 +39,8 @@ public class GameHistoryActivity extends AppCompatActivity
     {
         Intent i = new Intent(this, SelectedGameStatisticsActivity.class);
         i.putExtra("game", g);
+        i.putParcelableArrayListExtra("courseScores", (ArrayList<CourseScore>) g.getCourseScoreList());
+        //Need to put HoleScores
         startActivity(i);
     }
 

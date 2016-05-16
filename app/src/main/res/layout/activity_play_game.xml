@@ -130,9 +130,9 @@
 
             <TextView
                 android:id="@+id/play_game_course_avg_display"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
-                android:text="+ 0"
+                android:text="+12"
                 android:textSize="16sp"
                 android:fontFamily="monospace"
                 android:layout_alignRight="@id/play_game_player_name"
@@ -150,7 +150,7 @@
 
             <TextView
                 android:id="@+id/play_game_course_best_display"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:text="-12"
                 android:textSize="16sp"
@@ -171,7 +171,7 @@
 
             <TextView
                 android:id="@+id/play_game_hole_avg_display"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:text="+ 1"
                 android:textSize="16sp"
@@ -189,7 +189,7 @@
 
             <TextView
                 android:id="@+id/play_game_hole_best_display"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:text="+ 0"
                 android:textSize="16sp"

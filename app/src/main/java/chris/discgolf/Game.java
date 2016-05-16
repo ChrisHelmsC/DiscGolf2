@@ -243,6 +243,7 @@ public class Game implements Parcelable {
     private int ID;                     //Game ID
     private Course course;              //Course
     private PlayerList playerList;      //List of players in a game
+    private PlayerList droppedPlayerList;       //List of players who are quitters
     private List <List<HoleScore>> HSLList;     //List of holescore lists
     private List <CourseScore> courseScoreList; //List of player course scores
     private String date;                        //Date game was played
@@ -253,6 +254,7 @@ public class Game implements Parcelable {
     {
         course = c;
         playerList = pL;
+        droppedPlayerList = new PlayerList(new ArrayList<Player>());
         HSLList = new ArrayList<List<HoleScore>>();
         courseScoreList = new ArrayList<CourseScore>();
 
@@ -261,6 +263,14 @@ public class Game implements Parcelable {
         {
             courseScoreList.add(new CourseScore(playerList.getPlayerList().get(i), course));
         }
+    }
+
+    public PlayerList getDroppedPlayerList() {
+        return droppedPlayerList;
+    }
+
+    public void setDroppedPlayerList(PlayerList droppedPlayerList) {
+        this.droppedPlayerList = droppedPlayerList;
     }
 
     public String getDate() {

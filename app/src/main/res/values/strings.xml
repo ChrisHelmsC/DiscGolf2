@@ -5,8 +5,8 @@
 
     <!--Home Screen-->
     <string name="play_button">Play</string>
-    <string name="my_games_button">History</string>
-    <string name="my_discs_button">Settings</string>
+    <string name="my_games_button">Stats</string>
+    <string name="my_discs_button">Options</string>
 
     <!--Choose Course-->
     <string name="choose_course_search_hint">Course Search</string>
@@ -33,6 +33,11 @@
     <string name="statistics_game_button">Games</string>
     <string name="statistics_course_button">Courses</string>
     <string name="statistics_player_button">Players</string>
+
+    <!-- New Course Activity -->
+    <string name="new_course_course_name_text">Course Name</string>
+    <string name="new_course_course_hole_text">Hole Information</string>
+    <string name="new_course_hole_item_text">Hole </string>
 
 
 </resources>

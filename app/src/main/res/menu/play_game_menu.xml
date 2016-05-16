@@ -4,5 +4,19 @@
         android:id="@+id/play_game_menu_end_game"
         android:title="End Game">
     </item>
+    <item
+        android:id="@+id/play_game_menu_cancel_game"
+        android:title="Cancel Game">
+    </item>
+    <item
+        android:id="@+id/play_game_menu_skip_hole"
+        android:title="Skip Hole">
+
+    </item>
+
+    <item android:id="@+id/play_game_menu_drop_player"
+        android:title="Drop Player">
+
+    </item>
 
 </menu>

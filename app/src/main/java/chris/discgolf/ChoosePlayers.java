@@ -12,10 +12,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+//TODO: Change button height/layout setup
+//TODO: Allow deletion of players
 
 public class ChoosePlayers extends AppCompatActivity
 {
@@ -113,13 +117,13 @@ public class ChoosePlayers extends AppCompatActivity
     public void addNewPlayerPopup()
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final AlertDialog myDialog;
 
         alert.setTitle("New Player");
         alert.setMessage("Enter Player Name");
 
         final EditText input = new EditText(this);
         alert.setView(input);
-
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
@@ -150,7 +154,11 @@ public class ChoosePlayers extends AppCompatActivity
             }
         });
 
-        alert.show();
+        //Set alert so keyboard appears on launch
+        myDialog = alert.create();
+        myDialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+        myDialog.show();
     }
 
     //Gets list of all players from db

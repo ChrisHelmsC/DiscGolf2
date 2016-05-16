@@ -1,113 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="chris.discgolf.NewCourse">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="chris.discgolf.ActivityNewCourse"
+    android:focusable="true" android:focusableInTouchMode="true">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name:"
-        android:textSize="25sp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
-
-    <EditText
-        android:id="@+id/new_course_name"
-        android:layout_width="330dp"
-        android:layout_height="45dp"
-        android:background="@drawable/edit_text_drawable"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="6dp"
-        android:textSize="29sp"/>
-
-    <LinearLayout
+        android:id="@+id/new_course_course_name_textview"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:text="@string/new_course_course_name_text"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        style="@style/game_history_menu_display"/>
 
-        <LinearLayout
-            android:layout_width="250dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="15dp"
-            android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/new_course_course_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_course_course_name_textview"
+        style="@style/game_history_listview_display">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="City:"
-                android:textSize="25sp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"/>
-
-            <EditText
-                android:id="@+id/new_course_city"
-                android:layout_width="220dp"
-                android:layout_height="45dp"
-                android:background="@drawable/edit_text_drawable"
-                android:layout_marginLeft="10dp"
-                android:paddingLeft="6dp"
-                android:textSize="29sp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/new_course_course_name_edittext"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="15dp"
-            android:orientation="vertical">
+            android:layout_height="60dp"
+            android:textSize="25sp"
+            android:hint="Enter Course Name"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone"
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="State:"
-                android:textSize="25sp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"/>
-
-            <EditText
-                android:id="@+id/new_course_state"
-                android:layout_width="80dp"
-                android:layout_height="45dp"
-                android:background="@drawable/edit_text_drawable"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:textSize="29sp"
-                android:maxLength="2"/>
-
-        </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Holes"
-    android:textSize="25sp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"/>
+        android:id="@+id/new_course_course_location_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Course Location"
+        android:layout_below="@id/new_course_course_name_layout"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        style="@style/game_history_menu_display"/>
+    <RelativeLayout
+        android:id="@+id/new_course_location_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_course_course_location_textview"
+        android:gravity="center_vertical"
+        style="@style/game_history_listview_display">
 
-    <EditText
-        android:id="@+id/new_course_holes"
-        android:layout_width="80dp"
-        android:layout_height="45dp"
-        android:background="@drawable/edit_text_drawable"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="6dp"
-        android:textSize="29sp"
-        android:maxLength="2"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/new_course_course_state_edittext"
+            android:layout_width="72dp"
+            android:layout_height="50dp"
+            android:hint="State"
+            android:textSize="25sp"
+            android:textAlignment="center"
+            android:layout_alignParentRight="true"
+            android:maxLength="2"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone"
+            />
 
-    <Button
-        android:id="@+id/new_course_play"
-        android:layout_width="300dp"
-        android:layout_height="80dp"
-        android:text="Finish and Play"
-        android:textSize="20dp"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginTop="145dp"/>
+        <EditText
+            android:id="@+id/new_course_course_city_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@id/new_course_course_state_edittext"
+            android:hint="City"
+            android:layout_marginLeft="5dp"
+            android:textSize="25sp"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone"/>
 
-</LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/new_course_hole_information_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/new_course_course_hole_text"
+        android:layout_below="@id/new_course_location_layout"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        style="@style/game_history_menu_display"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/game_history_listview_display"
+        android:layout_below="@id/new_course_hole_information_textview">
+
+        <RelativeLayout
+            android:id="@+id/new_course_hole_amount_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/new_course_hole_amount_up_button"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:paddingTop="1dp"
+                android:drawableTop="@mipmap/ic_up_arrow"
+                android:gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/new_course_hole_amount_textview"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/new_course_hole_amount_up_button"
+                android:text="18"
+                android:textSize="60sp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:id="@+id/new_course_hole_amount_subtext"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="holes"
+                android:textSize="23dp"
+                android:layout_marginTop="-10dp"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:layout_below="@id/new_course_hole_amount_textview"/>
+
+            <Button
+                android:id="@+id/new_course_hole_amount_down_button"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/new_course_hole_amount_subtext"
+                android:paddingTop="1dp"
+                android:drawableTop="@mipmap/ic_down_arrow"/>
+
+        </RelativeLayout>
+
+        <ExpandableListView
+            android:id="@+id/new_course_hole_information_expandinglistview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/new_course_hole_amount_layout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/border"
+            android:layout_centerVertical="true">
+
+        </ExpandableListView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

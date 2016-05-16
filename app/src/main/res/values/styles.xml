@@ -8,4 +8,34 @@
         <item name="colorAccent">@color/light_orange</item>
     </style>
 
+    <style name="test_button">
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">#5e5e5e</item>
+        <item name="android:background">@drawable/main_menu_button_selector</item>
+        <item name="android:textSize">38sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">100dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="game_history_menu_display">
+        <item name="android:background">@drawable/game_history_display_title</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textColor">@color/whiteText</item>
+    </style>
+
+    <style name="game_history_listview_display">
+        <item name="android:background">@drawable/game_history_display_listview</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+    </style>
+
 </resources>

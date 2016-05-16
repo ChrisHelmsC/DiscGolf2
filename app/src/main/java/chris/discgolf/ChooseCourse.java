@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.Inflater;
 
 /*
 *   4/3/2016: Removed display of player statistics from course screen based on changes in course and player classes
@@ -24,6 +28,10 @@ import java.util.List;
 *   ChooseCourse pulls a list of courses from file and displays the courses in a listview to the user. The user can also search
 *   for specific courses using the search bar. Once a course is found, the user selects the course, and then clicks the Play button.
 *   The play button bundles up the course information, and launches the next activity.
+*
+*   TODO: 1. Change how searching/Selected course works.
+*   TODO: 2. Make custom courses stand out.
+*   TODO: 3. Allow deletion of custom courses
 */
 
 
@@ -34,9 +42,10 @@ public class ChooseCourse extends AppCompatActivity {
     private CourseAdapter CA;                           //Adapter for listview
     private Course clickedCourse;                       //Course that is currently selected by user
     private EditText ET;                                //Area to search for course
-    private Button playGameButton;                      //Choose current course for play
     private SQLiteDatabase qdb;                         //Database for grabbing courses
     private CourseList courseList;                      //List of courses
+
+    static final int NEW_COURSE_REQUEST_CODE = 1;       //Request code for returned new course
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +59,6 @@ public class ChooseCourse extends AppCompatActivity {
         //Get courses in seperate thread
         CA = new CourseAdapter(this, courseList);
         new GetCoursesFromDatabase().execute();
-
-        //Set Button
-        playGameButton = (Button) findViewById(R.id.play__game_button);
-        playGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchPlayerNumberPicker(clickedCourse);
-            }
-        });
 
         //Get EditText for searchbox
         ET = (EditText) findViewById(R.id.play_edit);
@@ -112,7 +112,6 @@ public class ChooseCourse extends AppCompatActivity {
                 }
             }
         }
-        CL.addCourse(new Course("Add New Course", "Select to Add a New Course", ""));
 
         CourseAdapter newAdapter = new CourseAdapter(this, CL);
         LV.setAdapter(newAdapter);
@@ -127,12 +126,6 @@ public class ChooseCourse extends AppCompatActivity {
             //If no course is selected, display toast
             Toast toast = Toast.makeText(this, "No Course Has Been Selected", Toast.LENGTH_SHORT);
             toast.show();
-        }
-        else if(c.getCourseName().equals("Add New Course"))
-        {
-            //If we are adding a new course, start new course activity
-            Intent IT = new Intent(this, NewCourse.class);
-            startActivity(IT);
         }
         else
         {
@@ -164,6 +157,48 @@ public class ChooseCourse extends AppCompatActivity {
             CA.setCourseList(result);
             CA.notifyDataSetChanged();
             LV.setAdapter(CA);
+        }
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.choose_course_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.choose_course_menu_new_course:
+                //If new course is chosen, launch new course activity for result
+                Intent i = new Intent(this, ActivityNewCourse.class);
+                startActivityForResult(i, NEW_COURSE_REQUEST_CODE);
+                break;
+
+            case R.id.choose_course_menu_confirm_icon:
+                //Confirm course selection
+                launchPlayerNumberPicker(clickedCourse);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        //Check request
+        switch(requestCode)
+        {
+            case NEW_COURSE_REQUEST_CODE:
+                if(resultCode == RESULT_OK)
+                {
+                    Course newCourse = data.getExtras().getParcelable("newCourse");
+                    courseList.addCourse(newCourse);
+                    setClickedCourse(newCourse);
+                    CA.notifyDataSetChanged();
+                }
+                break;
         }
     }
 }

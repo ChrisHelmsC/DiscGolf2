@@ -5,33 +5,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".StatisticsActivity"
+    android:weightSum="10"
+    android:gravity="center"
     >
 
-    <TextView
-        android:id="@+id/statistics_games_button"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/statistics_game_button"
-        android:gravity="center"
-        android:textSize="55sp" />
+        android:layout_weight="9"
+        android:weightSum="9"
+        android:padding="15dp">
 
-    <TextView
-        android:id="@+id/statistics_Courses_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/statistics_course_button"
-        android:gravity="center"
-        android:textSize="55sp" />
+        <Button
+            android:id="@+id/statistics_games_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/statistics_game_button"
+            android:gravity="center"
+            style="@style/test_button"
+            android:layout_weight="3"
+            android:drawableLeft="@drawable/games"/>
 
-    <TextView
-        android:id="@+id/statistics_Players_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/statistics_player_button"
-        android:gravity="center"
-        android:textSize="55sp" />
+        <Button
+            android:id="@+id/statistics_Courses_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/statistics_course_button"
+            android:gravity="center"
+            style="@style/test_button"
+            android:layout_weight="3"/>
+
+        <Button
+            android:id="@+id/statistics_Players_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/statistics_player_button"
+            android:gravity="center"
+            style="@style/test_button"
+            android:layout_weight="3"/>
+
+    </LinearLayout>
 
 </LinearLayout>

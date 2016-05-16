@@ -5,45 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="chris.discgolf.HomeScreen">
+    tools:context="chris.discgolf.HomeScreen"
+    android:weightSum="10"
+    android:gravity="center"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="9"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:weightSum="9"
+        >
 
-        <TextView
+        <Button
+            android:id="@+id/play_button"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:paddingRight="100dp"
+            android:text="@string/play_button"
+            android:gravity ="center"
+            android:drawableLeft="@drawable/catcher_small"
+            style="@style/test_button"
+            />
+
+        <Button
+            android:id="@+id/my_games_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:text="@string/my_games_button"
+            android:gravity = "center"
+            style="@style/test_button"
+            android:paddingRight="90dp"
+            android:drawableLeft="@drawable/stats_small" />
+
+        <Button
+            android:id="@+id/home_settings_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:text="@string/my_discs_button"
+            android:gravity="center"
+            style="@style/test_button"
+            android:paddingRight="35dp"
+            android:drawableLeft="@drawable/cogwheel"/>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/play_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:textSize="50sp"
-        android:text="@string/play_button"
-        android:gravity ="center"
-        />
-
-    <TextView
-        android:id="@+id/my_games_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:textSize="50sp"
-        android:text="@string/my_games_button"
-        android:gravity = "center"/>
-
-    <TextView
-        android:id="@+id/home_settings_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:textSize="50sp"
-        android:text="@string/my_discs_button"
-        android:gravity="center"/>
 
 </LinearLayout>

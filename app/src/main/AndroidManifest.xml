@@ -21,7 +21,7 @@
         <activity
             android:name=".ChoosePlayers"
             android:label="Add Players"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".SplashPageActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -41,8 +41,13 @@
         <activity
             android:name=".StatisticsActivity"
             android:label="History" />
-        <activity android:name=".GameHistoryActivity" />
-        <activity android:name=".SelectedGameStatisticsActivity"></activity>
+        <activity
+            android:name=".GameHistoryActivity"
+            android:label="Select Game" />
+        <activity android:name=".SelectedGameStatisticsActivity" />
+        <activity android:name=".ActivityNewCourse"
+            android:label="Create a New Course"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>

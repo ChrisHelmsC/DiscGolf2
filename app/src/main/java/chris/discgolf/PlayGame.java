@@ -40,11 +40,12 @@ import java.util.List;
 *   Scores are entered for each player. After all of a holes scores are entered, the user should
 *   choose to move to the next hole. If an error was made on a previous hole, the previous score can be edited.
 *
+* TODO make hole scores and course scores reflect tee spinner
  */
 
 public class PlayGame extends AppCompatActivity
 {
-    Context context;                              //Activity context
+    Context context;                        //Activity context
     Game thisGame;                          //Current game information
     private List<HoleScore>currentHSList;   //Current list of hole scores
     private Player currentPlayer;           //Current player represented on screen
@@ -92,6 +93,9 @@ public class PlayGame extends AppCompatActivity
         //Init Database
         DB db = new DB(this);
         qdb = db.getReadableDatabase();
+
+        //Set Game ID
+        thisGame.setID(DB.getNextGameId(qdb));
 
         //Set player name display, Tee best display, current Hole display
         playerNameDisplay = (TextView)findViewById(R.id.play_game_player_name);
@@ -190,22 +194,27 @@ public class PlayGame extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if(item.getItemId() == R.id.play_game_menu_end_game)
+        switch(item.getItemId())
         {
-            checkEndGameAlert();
+            case R.id.play_game_menu_end_game:
+                checkEndGameAlert();
+                break;
+            case R.id.play_game_menu_cancel_game:
+                checkCancelGame();
+                break;
+            case R.id.play_game_menu_drop_player:
+                dropCurrentPlayerFromGame();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void incrementHole()
     {
         //Check if current hole is last hole, if it is, end game
-        if(thisGame.isLastHoleInCourse(currentHole))
+        if(!thisGame.isLastHoleInCourse(currentHole))
         {
-            finishGame();
-        }
-        else {
-
             //Change current Hole
             currentHole = thisGame.getCourse().getNextHole(currentHole);
             //Change current hole display
@@ -364,7 +373,7 @@ public class PlayGame extends AppCompatActivity
             finalScore *= -1;
         }
 
-        if(score > 9 || score < 9)
+        if(score > -9 && score < 9)
         {
             total += " ";
         }
@@ -601,5 +610,56 @@ public class PlayGame extends AppCompatActivity
     public void onBackPressed()
     {
         //Do not allow user to go backwards
+    }
+
+    //Cancels current game if user selected okay
+    private void checkCancelGame()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to cancel the game? All current game data will be lost.");
+        builder.setPositiveButton("Cancel Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(context, HomeScreen.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Do nothing
+            }
+        });
+
+        builder.show();
+    }
+
+    private void dropCurrentPlayerFromGame()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to drop " + currentPlayer.getFirstName() + " " + currentPlayer.getLastName() + "?");
+        builder.setPositiveButton("Drop Player", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                //Insert player into played in, drop player from current player list
+                Player p = currentPlayer;
+                nextPlayer();
+                thisGame.getPlayerList().getPlayerList().remove(p);
+                thisGame.getDroppedPlayerList().getPlayerList().add(p);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Do Nothing, player canceled
+            }
+        });
+
+        builder.create().show();
     }
 }

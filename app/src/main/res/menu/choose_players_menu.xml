@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/choose_players_menu_add_new"
-        android:title="Add Player">
+        android:title="Add Player"
+        android:icon="@mipmap/ic_new_player"
+        app:showAsAction="always">
     </item>
 
 </menu>

@@ -183,6 +183,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         insertCourseScoresIntoDatabase(db, game);
         insertHoleScoresIntoDatabase(db, game);
         insertPlayersIntoPlayedIn(game.getPlayerList().getPlayerList(), game.getID(), db);
+        insertPlayersIntoPlayedIn(game.getDroppedPlayerList().getPlayerList(), game.getID(), db);
     }
 
     //Returns a game object associated with game_id
@@ -225,6 +226,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
             temp = new Game(getCourseByID(gameCursor.getInt(1), db), pl);
             temp.setID(gameCursor.getInt(0));
             temp.setDate(gameCursor.getString(2));
+            temp.setCourseScoreList(getCourseScoresForGame(temp.getID(), db));
             gameList.add(temp);
             gameCursor.moveToNext();
         }
@@ -313,6 +315,30 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return courseList;
     }
 
+    //Inserts a course into the database
+    public static void insertCourse(SQLiteDatabase db, Course c)
+    {
+        //TODO check that course does not match already existing course
+
+        Cursor cursor = db.rawQuery("SELECT _ID FROM COURSES ORDER BY _ID DESC", null);
+        cursor.moveToFirst();
+        int nextId = cursor.getInt(0) + 1;
+        c.setId(nextId);
+
+        //Insert course
+        db.execSQL("INSERT INTO COURSES (name, city, state) values ('" + c.getCourseName() + "', '" + c.getState() + "', '" + c.getCity() + "');");
+
+        //Insert Holes
+        insertHoleList(c.getId(), c.getHoleList(), db);
+
+        //Insert StartingPoints
+        for(int i = 0; i < c.getHoleList().size(); i++)
+        {
+            Hole h = c.getHoleList().get(i);
+            insertStartingPointList(c.getId(), h.getHoleNumber(), h.getStartingPoints(), db);
+        }
+    }
+
     /*==================================================================================================================
      * !!!! THE FOLLOWING FUNCTIONS ARE FOR HOLES
      */
@@ -390,6 +416,20 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         }
 
         return hList;
+    }
+
+    //Inserts a list of holes into the db
+    public static void insertHoleList(int id, List<Hole> hList, SQLiteDatabase db)
+    {
+        for(int i = 0; i < hList.size(); i++)
+        {
+            insertHole(id, hList.get(i), db);
+        }
+    }
+    //Inserts a single hole into the db
+    public static void insertHole(int id, Hole h, SQLiteDatabase db)
+    {
+        db.execSQL("INSERT INTO HOLES (course_id, number, par) VALUES (" + Integer.toString(id) + ", " + Integer.toString(h.getHoleNumber()) + ", " + Integer.toString(h.getPar()) + ");");
     }
 
     /*==================================================================================================================
@@ -506,6 +546,21 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         return hsList;
     }
 
+    //inserts a list of startingpoints
+    public static void insertStartingPointList(int id, int number, List<HoleStartingPoint> hList, SQLiteDatabase db)
+    {
+        for(int i = 0; i < hList.size(); i++)
+        {
+            insertStartingPoint(id, number, hList.get(i), db);
+        }
+    }
+
+    //inserts a startingpoint
+    public static void insertStartingPoint(int id, int number, HoleStartingPoint h, SQLiteDatabase db)
+    {
+        db.execSQL("INSERT INTO STARTINGPOINTS (course_id, hole_number, name, length) values (" + Integer.toString(id) + ", " + Integer.toString(number) + ", '" + h.getName() + "', " + Integer.toString(h.getLength()) + ");");
+    }
+
         /*==================================================================================================================
      * !!!! THE FOLLOWING FUNCTIONS ARE FOR PLAYED_IN
      */
@@ -535,6 +590,12 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
                 db.execSQL("INSERT INTO playedin values (" + Integer.toString(gameId) + ", " + pList.get(i).getId() + ");");
             }
         }
+
+    //Inserts single player into db
+    public static void insertPlayerIntoPlayedIn(Player p, int gameId, SQLiteDatabase db)
+    {
+        db.execSQL("INSERT INTO playedin values (" + Integer.toString(gameId) + ", " + p.getId() + ");");
+    }
 
         //Deletes all records from played in
         public static void deleteAllFromPlayedIn(SQLiteDatabase db)
@@ -695,7 +756,7 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         while(csCursor.getPosition() < csCursor.getCount())
         {
-            csList.add(new CourseScore(getPlayerById(csCursor.getInt(2), db), getCourseByID(csCursor.getInt(1), db)));
+            csList.add(new CourseScore(getPlayerById(csCursor.getInt(2), db), getCourseByID(csCursor.getInt(1), db), csCursor.getInt(4)));
             csCursor.moveToNext();
         }
 
@@ -742,7 +803,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Fountain Hills Park', 'AZ', 'Phoenix')");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Abrams Park', 'WA', 'Ridgefield')");
         db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Beth Schmidt Park', 'NC', 'Elon')");
-        db.execSQL("INSERT INTO courses (name, state, city) VALUES ('Add New Course', '', 'Select to Add a New Course');");
     }
 
     public static void addStockHoles(SQLiteDatabase db)
