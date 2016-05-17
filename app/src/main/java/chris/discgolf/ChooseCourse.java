@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,9 +30,8 @@ import java.util.zip.Inflater;
 *   for specific courses using the search bar. Once a course is found, the user selects the course, and then clicks the Play button.
 *   The play button bundles up the course information, and launches the next activity.
 *
-*   TODO: 1. Change how searching/Selected course works.
-*   TODO: 2. Make custom courses stand out.
-*   TODO: 3. Allow deletion of custom courses
+*   TODO: 3. Launch course editing activity when icon is clicked
+*
 */
 
 
@@ -87,17 +87,24 @@ public class ChooseCourse extends AppCompatActivity {
     public void setClickedCourse(Course c)
     {
         clickedCourse = c;
-        ET.setText(c.getCourseName());
+        CA.notifyDataSetChanged();
+
+        invalidateOptionsMenu();
+
+    }
+
+    public Course getClickedCourse() {
+        return clickedCourse;
     }
 
     /*
-    * Filters the adapter for the course listview based on what is currently typed into
-    * the search bar
-     */
+        * Filters the adapter for the course listview based on what is currently typed into
+        * the search bar
+         */
     public void filteredAdapter(CourseAdapter CA)
     {
         String s = ET.getText().toString().toLowerCase();
-        Iterator<Course> courseIT = CA.getCourseList().getCourseList().listIterator();
+        Iterator<Course> courseIT = courseList.getCourseList().listIterator();
         CourseList CL = new CourseList();
 
         Course temp;
@@ -113,8 +120,10 @@ public class ChooseCourse extends AppCompatActivity {
             }
         }
 
-        CourseAdapter newAdapter = new CourseAdapter(this, CL);
-        LV.setAdapter(newAdapter);
+        //CourseAdapter newAdapter = new CourseAdapter(this, CL);
+        //LV.setAdapter(newAdapter);
+        CA.setCourseList(CL);
+        CA.notifyDataSetChanged();
     }
 
     /*Launches next activity using the selected course. If no course
@@ -164,6 +173,17 @@ public class ChooseCourse extends AppCompatActivity {
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.choose_course_menu, menu);
+
+        //Check if edit icon should be displayed
+        if(clickedCourse != null && clickedCourse.isCustom())
+        {
+            menu.findItem(R.id.choose_course_menu_edit_icon).setVisible(true);
+        }
+        else
+        {
+            menu.findItem(R.id.choose_course_menu_edit_icon).setVisible(false);
+        }
+
         return true;
     }
 
@@ -180,6 +200,13 @@ public class ChooseCourse extends AppCompatActivity {
             case R.id.choose_course_menu_confirm_icon:
                 //Confirm course selection
                 launchPlayerNumberPicker(clickedCourse);
+                break;
+
+            case R.id.choose_course_menu_edit_icon:
+                Intent k = new Intent(this, ActivityNewCourse.class);
+                clickedCourse.setHoleList(DB.getCourseHoles(clickedCourse.getId(), qdb));
+                k.putExtra("editCourse" ,clickedCourse);
+                startActivityForResult(k, NEW_COURSE_REQUEST_CODE);
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -8,6 +8,7 @@
     android:id="@+id/layout_Play"
     tools:context=".ChooseCourse"
     android:background="@color/whiteText"
+    android:focusable="true"
     >
 
         <!--Search bar-->
@@ -25,15 +26,22 @@
             />
 
         <!--Course Listview-->
-        <ListView
-            android:id="@+id/play_list_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/border"
-            android:layout_below="@id/play_edit"
-            >
+            android:background="@drawable/choose_course_list_view"
+            android:layout_below="@id/play_edit">
 
-        </ListView>
+                <ListView
+                    android:id="@+id/play_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    >
+
+                </ListView>
+
+        </RelativeLayout>
 
 </RelativeLayout>
 

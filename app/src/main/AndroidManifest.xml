@@ -10,18 +10,20 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".HomeScreen"
-            android:label="@string/title_activity_home" />
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ChooseCourse"
             android:label="@string/title_activity_Choose_Course"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".NewCourse"
-            android:label="Add New Course" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity
             android:name=".ChoosePlayers"
             android:label="Add Players"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashPageActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -37,17 +39,22 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".TestingActivity"
-            android:label="Settings" />
+            android:label="Settings"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".StatisticsActivity"
-            android:label="History" />
+            android:label="History"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".GameHistoryActivity"
-            android:label="Select Game" />
-        <activity android:name=".SelectedGameStatisticsActivity" />
+            android:label="Select Game"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SelectedGameStatisticsActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ActivityNewCourse"
             android:label="Create a New Course"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

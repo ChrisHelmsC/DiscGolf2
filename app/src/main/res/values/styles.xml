@@ -38,4 +38,10 @@
         <item name="android:paddingLeft">10dp</item>
     </style>
 
+    <!-- style for Action Bar -->
+    <style name="MyActionBarTabStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:paddingLeft">32dp</item>
+        <item name="android:paddingRight">32dp</item>
+    </style>
+
 </resources>

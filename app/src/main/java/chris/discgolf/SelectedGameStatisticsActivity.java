@@ -6,6 +6,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+//TODO: Add holescores listview functionality
+
 public class SelectedGameStatisticsActivity extends AppCompatActivity
 {
     Game selectedGame;      //Selected Game

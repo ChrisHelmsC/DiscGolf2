@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     android:background="@drawable/choose_course_list_view_item"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp"
     >
-
-    <TextView
-        android:id="@+id/name_view_course_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:textSize="24sp"
-        android:text="MedowBrook"
-        android:layout_marginLeft="22dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="25dp">
 
-    <TextView
-        android:id="@+id/name_view_location"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="Greenville, NC"
-        android:layout_marginLeft="22dp"/>
+        <TextView
+            android:id="@+id/name_view_course_name"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:textSize="24sp"
+            android:text="MedowBrook"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/name_view_location"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Greenville, NC"
+            />
+
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/name_view_custom_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/light_orange"
+            android:visibility="invisible"
+            android:background = "@drawable/orangewrench"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="13dp"/>
+
+</RelativeLayout>

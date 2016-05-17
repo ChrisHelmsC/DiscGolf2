@@ -20,6 +20,7 @@ public class Course implements Parcelable {
     private String city;
     private String state;
     List<Hole> holeList;
+    private boolean custom;
 
     public Course(int i, String name, String c, String s, List<Hole> holes)
     {
@@ -28,6 +29,7 @@ public class Course implements Parcelable {
         this.holeList = holes;
         this.state = s;
         this.city = c;
+        this.custom = false;
     }
 
     public Course(String name, String c, String s)
@@ -36,6 +38,7 @@ public class Course implements Parcelable {
         this.state = s;
         this.city = c;
         holeList = new ArrayList<Hole>();
+        this.custom = false;
     }
 
     public Course(int i, String name, String c, String s)
@@ -45,6 +48,15 @@ public class Course implements Parcelable {
         this.state = s;
         this.city = c;
         holeList = new ArrayList<Hole>();
+        this.custom = false;
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public void setCustom(boolean custom) {
+        this.custom = custom;
     }
 
     public int getId() {

@@ -12,10 +12,19 @@ import java.util.List;
 
 /**
  * Created by Chris on 4/3/2016.
+ *
+ * TODO: Delete Holes from Course
+ * Todo: Delete Course from DB
+ * TODO: Delete tees from hole
+ * TODO: Delete games from DB
+ *
+ * TODO: Update course info
+ * TODO: Update Hole info
+ * TODO: Update Tee info
  */
 public class DB extends SQLiteOpenHelper
 {
-    final static int DB_VERSION = 1;          //Holds db version
+    final static int DB_VERSION = 2;          //Holds db version
     static String DB_NAME = "mydb.s3db";      //db name
     Context context;
 
@@ -83,11 +92,19 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
 
         //Create played_in table
         db.execSQL("CREATE TABLE playedIN(game_id INTEGER, player_id INTEGER, FOREIGN KEY (game_id) REFERENCES games(_id), FOREIGN KEY (player_id) REFERENCES players(_id), PRIMARY KEY (game_id, player_id))");
+
+        //Create custom courses table (Should be a column in courses)
+        db.execSQL("CREATE TABLE customCourses(course_id INTEGER, FOREIGN KEY (course_id) REFERENCES COURSES (_id))");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    {
+        if(oldVersion == 1 && newVersion > oldVersion)
+        {
+            //Create custom courses table (Should be a column in courses)
+            db.execSQL("CREATE TABLE customCourses(course_id INTEGER, FOREIGN KEY (course_id) REFERENCES COURSES (_id))");
+        }
     }
 
     /*========================================================================================
@@ -307,6 +324,13 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         while(courseCursor.getPosition() < tableSize)
         {
             Temp = new Course(courseCursor.getInt(0), courseCursor.getString(1), courseCursor.getString(2), courseCursor.getString(3));
+
+            //Check for custom course
+            if(isCourseCustom(courseCursor.getInt(0), db))
+            {
+                Temp.setCustom(true);
+            }
+
             courseList.add(Temp);
             courseCursor.moveToNext();
         }
@@ -318,8 +342,6 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
     //Inserts a course into the database
     public static void insertCourse(SQLiteDatabase db, Course c)
     {
-        //TODO check that course does not match already existing course
-
         Cursor cursor = db.rawQuery("SELECT _ID FROM COURSES ORDER BY _ID DESC", null);
         cursor.moveToFirst();
         int nextId = cursor.getInt(0) + 1;
@@ -337,6 +359,26 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
             Hole h = c.getHoleList().get(i);
             insertStartingPointList(c.getId(), h.getHoleNumber(), h.getStartingPoints(), db);
         }
+
+        if(c.isCustom())
+        {
+            //Insert course into custom table
+            addCourseToCustomCourses(c.getId(), db);
+        }
+    }
+
+    //Returns true if a course with a specific name, state and city already exist
+    public static boolean courseExists(Course c, SQLiteDatabase db)
+    {
+        String name = c.getCourseName(), city = c.getCity(), state = c.getState();
+        Cursor cursor =  db.rawQuery("SELECT * FROM COURSES WHERE COURSES.city = '" + city + "' " +
+                "AND COURSES.state = '" + state + "' AND COURSES.name = '" + name +"';", null);
+
+        if(cursor.getCount() > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     /*==================================================================================================================
@@ -785,6 +827,26 @@ CREATE TABLE startingPointScores ( game_id INTEGER, course_id INTEGER, hole_numb
         }
 
         return csList;
+    }
+
+    /*****************************************************************************
+     * ****THE FOLLOWING FUNCTIONS ARE FOR CUSTOM COURSES*****
+     */
+
+    public static void addCourseToCustomCourses(int courseId, SQLiteDatabase db)
+    {
+        db.execSQL("INSERT INTO CustomCourses VALUES (" + Integer.toString(courseId) + ");");
+    }
+
+    public static boolean isCourseCustom(int courseId, SQLiteDatabase db)
+    {
+        Cursor custom =db.rawQuery("SELECT * FROM CustomCourses WHERE CustomCourses.Course_id == " + courseId + ";", null);
+
+        if(custom.getCount() > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     /*****************************************************************************

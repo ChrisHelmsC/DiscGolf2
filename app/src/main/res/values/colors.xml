@@ -6,7 +6,10 @@
     <color name="whiteText">#ffffff</color>
     <color name="light_orange2">#ff8433</color>
     <color name="light_orange">#ff8533</color>
+    <color name="trans_orange">#6cfd6906</color>
     <color name="fail_red">#ef2637</color>
     <color name="pass_green">#39ba28</color>
+    <color name="background_holo_light">#fff3f3f3</color>
+    <color name="border_grey">#b53b3b3b</color>
 
 </resources>
